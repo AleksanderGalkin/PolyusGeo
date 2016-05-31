@@ -1,0 +1,175 @@
+﻿@using PolyusGeo.Infrastructure.Helpers;
+
+@{
+    ViewBag.Title = "Display";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    
+}
+
+@Styles.Render("~/ScBlockVolumeSole/bundles/css")
+<h4>Запись в БД</h4>
+
+
+<div class="ajax_loader" style="display:none">
+    <div class="img_container">
+        <img alt="" src="@Url.AreaContent("ajax-loader.gif")">
+    </div>
+</div>
+
+<div class="container" ng-app="SaverApp">
+    <div ng-controller="ViewController">
+        <div class="row">
+            <div class="table-responsive">
+                <table class="table table-condensed table-hover">
+
+                    <thead>
+                        <tr>
+                            <td>BLKNAM</td>
+                            <td>MAT</td>
+                            <td>VOL</td>
+                            <td>DATE</td>
+                            <td>COMMENT</td>
+                            <td>TON</td>
+                            <td>DEN</td>
+                            <td>GC_AU</td>
+                            <td>GC_AS</td>
+                            <td>GC_C</td>
+                            <td>GC_S</td>
+                            <td>GC_FE</td>
+                            <td>ORETYPE</td>
+                        </tr>
+                    </thead>
+
+                    <tbody ng-repeat="row in rows">
+                        <tr ng-click="edit_row(row)">
+                            <td>{{row.BLKNAM}}</td>
+                            <td>{{row.MATERIAL}}</td>
+                            <td>{{row.VOLUME}}</td>
+                            <td>{{row.DATE}}</td>
+                            <td ng-class="{'has-error': row.COMMENT == undefined}">{{row.COMMENT}}</td>
+                            <td>{{row.TONNES}}</td>
+                            <td>{{row.DENSITY}}</td>
+                            <td>{{row.GC_AU}}</td>
+                            <td>{{row.GC_AS}}</td>
+                            <td>{{row.GC_C}}</td>
+                            <td>{{row.GC_S}}</td>
+                            <td>{{row.GC_FE}}</td>
+                            <td>{{row.ORETYPE}}</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+          </div>
+        <div class="row">
+            <button type="button" class="btn btn-default btn-primary col-xs-6" ng-click="save(rows)">Сохранить</button>
+            <button type="button" class="btn btn-warning col-xs-6" ng-click="cancel()">Вернуться</button>
+        </div>
+   </div> 
+</div>
+
+
+@section scripts{
+    <script>
+
+        var SaverApp = angular.module("SaverApp", ["ui.bootstrap"]);
+        SaverApp.controller("ViewController", function ($scope, $uibModal) {
+
+            var sdata = localStorage.getItem("Data");
+            var operation_date = localStorage.getItem("OperationDate");
+            if(sdata)
+            {
+                var Data = JSON.parse(sdata);
+                Data.forEach(function (value) {
+                    value.DATE = operation_date;
+                });
+
+                $scope.rows = Data;
+            }
+            else
+            {
+                $scope.rows = null;
+            }
+
+
+            $scope.save = function(rows)
+            {
+                var rows_to_server = JSON.stringify(rows) ;
+                $.ajax({
+                    url: "@Url.Action("Save","Saver",new { area= "ScBlockVolumeSole" })",
+                    type: "POST",
+                    data: rows_to_server,
+                    dataType: "json",
+                    contentType: "application/json; charset=utf-8",
+                    success: function (result) {
+                        window.location = '@Url.Action("DbViewer", "Saver", new { area = "ScBlockVolumeSole" })'; 
+                    },
+                    error: function (err) {
+                        debugger;
+                        var error_text = err.responseText.match(/\<title\>[\W,\w,\d]{1,}\<\/title\>/);
+                        if (error_text)
+                        {
+                            var error_text2 = error_text[0].replace(/\<[\w\d]*\>/gi, " ").replace(/\<\/[\w\d]*\>/gi, " ").replace(/\&[\w\d]*\;/gi, " ");
+
+                            alert("Произошла ошибка:" + error_text2);
+                        }
+                        else
+                        {
+                            alert("Произошла ошибка:" + err.responseText);
+                        }
+                        
+                        
+                    },
+                    beforeSend: function () {
+                        $('.ajax_loader').show();
+                    },
+                    complete: function () {
+                        $('.ajax_loader').hide();
+                    }
+                });
+                localStorage.clear();
+            }
+
+            $scope.cancel = function () {
+                localStorage.clear();
+                history.back();
+            }
+            
+            $scope.edit_row = function(row)
+            {
+                var currentCOMMENT = row.COMMENT;
+                var s_block_mod = { COMMENT: row.COMMENT };
+                var modalInstance = $uibModal.open({
+                    templateUrl: '@Url.Action("ModalTpl","Saver",new { area = "ScBlockVolumeSole"})',
+                    controller: 'ModalInstanceCtrl',
+                    resolve: {
+                        s_block: function () {
+                            return s_block_mod;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
+                    row.COMMENT = s_block_mod.COMMENT;
+                });
+
+            }
+
+        });
+       
+        SaverApp.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, s_block) {
+            $scope.s_block = s_block;
+            $scope.ok = function () {
+                $uibModalInstance.close();
+            };
+
+            $scope.cancel = function () {
+                $uibModalInstance.dismiss('cancel');
+            };
+        });
+
+
+    </script>
+  }
+

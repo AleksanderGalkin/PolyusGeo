@@ -1,0 +1,46 @@
+﻿body { 
+    padding-top: 70px !important;
+}
+
+@media screen and (max-width: 2000px) {
+    body {
+        font-size:12px;
+    }
+}
+ 
+@media screen and (max-width: 460px) {
+    body {
+        font-size:11px;
+    }
+}
+
+@media screen and (max-width: 260px) {
+    body {
+        font-size:9px;
+    }
+}
+
+
+.modal {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px;
+}
+
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}
+
+.has-error{
+    color: red;
+    background-color:#FFE4E1;
+}

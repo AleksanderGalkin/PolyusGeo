@@ -1,0 +1,92 @@
+﻿@using PolyusGeo.Infrastructure.Helpers;
+
+@{
+    ViewBag.Title = "DbViewer";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@Styles.Render("~/ScBlockVolumeSole/bundles/css")
+<h4>Обзор таблицы БД</h4>
+<h6>за последние 2 дня</h6>
+
+<div class="ajax_loader" style="display:none">
+    <div class="img_container">
+        <img alt="" src="@Url.AreaContent("ajax-loader.gif")">
+    </div>
+</div>
+
+<div class="container" ng-app="DbApp">
+    <div ng-controller="ViewerController">
+        <div class="row">
+            <div class="table-responsive table-fixed">
+                <table class="table table-condensed table-hover ">
+                    <thead>
+                        <tr>
+                            <td>BLKNAM</td>
+                            <td>VOL</td>
+                            <td>TON</td>
+                            <td>GC_AU</td>
+                            <td>GC_AS</td>
+                            <td>GC_C</td>
+                            <td>GC_S</td>
+                            <td>GC_FE</td>
+                            <td>PIT</td>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        <tr ng-repeat="row in rows">
+                            <td>{{row.BLKNAM}}</td>
+                            <td>{{row.VOLUME}}</td>
+                            <td>{{row.TONNES}}</td>
+                            <td>{{row.GC_AU}}</td>
+                            <td>{{row.GC_AS}}</td>
+                            <td>{{row.GC_C}}</td>
+                            <td>{{row.GC_S}}</td>
+                            <td>{{row.GC_FE}}</td>
+                            <td>{{row.PIT}}</td>
+                        </tr>
+                    </tbody>
+
+                </table>
+
+            </div>
+        </div>
+        <div class="row">
+            <button type="button" class="btn btn-default btn-primary col-xs-6" ng-click="cancel()">В начало</button>
+        </div>
+    </div>
+</div>
+
+@section scripts{
+    <script>
+        var DbApp = angular.module("DbApp", []);
+        DbApp.controller("ViewerController", function ($scope) {
+            $scope.rows = null;
+            $.ajax({
+                url: '@Url.Action("DbViewerGetRows", "Saver", new { area = "ScBlockVolumeSole" })',
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+
+                    $scope.rows = result;
+                    $scope.$apply();
+                },
+                error: function (err) {
+                    alert("Произошла ошибка:" + err.statusText + " " + err.responseText);
+                },
+                beforeSend: function () {
+                    $('.ajax_loader').show();
+                },
+                complete: function () {
+                    $('.ajax_loader').hide();
+                }
+            });
+
+            $scope.cancel = function () {
+                history.go(-2);
+            }
+        });
+    </script>
+
+    }

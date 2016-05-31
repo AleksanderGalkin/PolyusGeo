@@ -1,0 +1,163 @@
+﻿@using PolyusGeo.Infrastructure.Helpers;
+@{
+    ViewBag.Title = "Подсчет объемов горной массы в подошве v. 4.3";
+
+}
+
+
+<div class="ajax_loader" style="display:none">
+    <div class="img_container">
+        <img alt="" src="@Url.AreaContent("ajax-loader.gif")">
+    </div>
+</div>
+
+<div class="container">
+
+
+    <div class="row">
+        <p class="h4">Подсчет объемов горной массы в подошве v. 4.3</p>
+    </div>
+    <div class="row form-group">
+        <label for="iFile5_bg" class="control-label">
+            Стринговый файл контуров руды сортового плана
+        </label>
+        <input type="file" id="iFile5" name="iFile5" class="customFile" />
+        <div id="iFile5_bg" class="input-group">
+            <span title="Выбрать файл" class="input-group-addon ">.&nbsp;.&nbsp;.</span>
+            <input type="text" id="iFile5FileName" class="form-control" placeholder="Стринговый файл контуров руды сортового плана">
+        </div>
+
+
+        <label for="iFile6_bg" class="control-label">
+            Файл блочной модели сортового плана
+        </label>
+        <input type="file" id="iFile6" name="iFile6" class="customFile" />
+        <div id="iFile6_bg" class="input-group">
+            <span title="Выбрать файл" class="input-group-addon ">.&nbsp;.&nbsp;.</span>
+            <input type="text" id="iFile6FileName" class="form-control" placeholder="Файл блочной модели сортового плана">
+        </div>
+
+
+        <label for="iFile2_bg" class="control-label">
+            Файл треугольников горных работ текущего периода
+        </label>
+        <input type="file" id="iFile2" name="iFile2" class="customFile" />
+        <div id="iFile2_bg" class="input-group">
+            <span title="Выбрать файл" class="input-group-addon ">.&nbsp;.&nbsp;.</span>
+            <input type="text" id="iFile2FileName" class="form-control" placeholder="Файл треугольников горных работ текущего периода">
+        </div>
+
+
+
+        <label for="iFile3_bg" class="control-label">
+            Стринговый файл бровок горных работ предыдущего периода
+        </label>
+        <input type="file" id="iFile3" name="iFile3" class="customFile" />
+        <div id="iFile3_bg" class="input-group">
+            <span title="Выбрать файл" class="input-group-addon ">.&nbsp;.&nbsp;.</span>
+            <input type="text" id="iFile3FileName" class="form-control" placeholder="Стринговый файл бровок горных работ предыдущего периода">
+        </div>
+
+
+
+        <label for="iFile4_bg" class="control-label">
+            Стринговый файл бровок горных работ текущего периода
+        </label>
+        <input type="file" id="iFile4" name="iFile4" class="customFile" />
+        <div id="iFile4_bg" class="input-group">
+            <span title="Выбрать файл" class="input-group-addon ">.&nbsp;.&nbsp;.</span>
+            <input type="text" id="iFile4FileName" class="form-control" placeholder="Стринговый файл бровок горных работ текущего периода">
+        </div>
+
+        <label for="iBench"  class="control-label">
+            Номер горизонта
+        </label>
+
+        <p class="form-control-static" id="iBench"></p>
+
+    </div>
+    <div class="row">
+        <div class="form-horizontal">
+            
+            <!-- Определение выходных каталогов-->
+
+            <label for="OF_Category" class="control-label">
+                Выберите каталог для файла-результата
+            </label>
+
+            <select id="OF_Category" name="OF_Category" class="form-control">
+                <option>DRILLHOLES</option>
+                <option selected>BLOCK_MODELS</option>
+                <option>ORE WIREFRAMES</option>
+                <option>SORTOVOI_PLAN</option>
+                <option>STRINGS</option>
+            </select>
+
+            <select id="OF_Year" name="OF_Year" class="form-control ">
+                <option id='y2013'>2013</option>
+                <option id='y2014'>2014</option>
+                <option id='y2015'>2015</option>
+                <option id='y2016'>2016</option>
+                <option id='y2017'>2017</option>
+                <option id='y2018'>2018</option>
+            </select>
+            <select id="OF_Month" name="OF_Month" class="form-control ">
+                <option id='m1'>01</option>
+                <option id='m2'>02</option>
+                <option id='m3'>03</option>
+                <option id='m4'>04</option>
+                <option id='m5'>05</option>
+                <option id='m6'>06</option>
+                <option id='m7'>07</option>
+                <option id='m8'>08</option>
+                <option id='m9'>09</option>
+                <option id='m10'>10</option>
+                <option id='m11'>11</option>
+                <option id='m12'>12</option>
+            </select>
+            <!-- Определение выходных каталогов-->
+        </div>
+    </div>
+    <div class="row">
+        <div class="form-group">
+
+                    <!-- Определение имени выходных файлов-->
+
+                    <label for="oFile1" class="control-label">Введите имя файла-результата</label>
+                    <input type="text" id="oFile1" name="oFile1" class="form-control" value="tn_sole" />
+
+                    <input type="text" id="oFile2" name="oFile2" class="form-control" value="bm_sole" />
+                    <!-- Определение имени выходных файлов-->
+                </div>
+            </div>
+
+            <div class="row ">
+                <input type="button" class="btn btn-primary  col-xs-6" value="Старт" name="Старт" onclick="return btnExecute_onclick()" />
+                <input type="button" class="btn btn-warning col-xs-6" value="Help" name="btnHelp" onclick="return btnHelp_onclick()" />
+            </div>
+        </div>
+
+
+
+@section scripts{
+    @Scripts.Render("~/ScBlockVolumeSole/bundles/scripts");
+
+    <script type="text/javascript">
+        var oDmApp = null;
+        var oScript = null;
+        var str_Storage_Folder = null;  // Каталог структурированного хранилища файлов
+        var files_names_subfolder = "BLOCK_MODELS"; // определяет подкаталог хранилища файлов где находятся фиксированные входные файлы
+        // список фиксированных входных файлов используемых в работе команд Datamine
+        var files_names = null;
+        var pit = null;
+
+     
+        var sendObjData = function (ObjData , OperationDate) {
+            var sObj = JSON.stringify(ObjData)
+            localStorage.setItem("Data", sObj);
+            localStorage.setItem("OperationDate", OperationDate);
+            window.location = '@Url.Action("Display","Saver",new { area = "ScBlockVolumeSole"})';
+        }
+        
+    </script>
+}

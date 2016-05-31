@@ -1,0 +1,185 @@
+BODY{
+    background-image:url(bgScript.jpg);
+    
+}
+/*.ajax_loader {
+  background: url(ajax-loader.gif) no-repeat center;
+}*/
+
+/*th{font-size:normal; color:#00008B;font-family:Arial;text-align:center;line-height:normal;}
+table{
+    background:#D1EEEE;
+    border-color:#FFD39B; 
+    border:1px solid; 
+    border-collapse:collapse;
+    min-width: 17%;
+}
+thead { background-image: url(bgHScript.jpg);background-repeat:repeat-x; padding:2px; text-align:center; } 
+td{padding:2px;border:1px solid;}
+.td_noborder {border:none;}
+#FirstSym, .fs{color:#8B0000; font-family:Arial;font-size:80%; margin-left: 2px;}
+#OtherSyms, .os{color:#00008B; font-family:Arial;font-size:80%;}
+#ShadowSyms{color:#4A708B; font-family:Arial;font-size:80%;}*/
+
+
+/*ul
+{
+  
+    padding: 0 0 2px;
+    position: relative;
+    margin: 0;
+    text-align: center;
+	 cursor:pointer; 
+ 	font-family:Arial;
+	font-size:80%;
+	font-weight: bold; 
+	text-decoration: none;
+	line-height: 3.8em;
+}*/
+
+
+
+/*ul li
+{
+	list-style: none;
+	display: inline;
+	padding: 0 3px;
+
+}*/
+
+
+
+/*ul li a
+{
+    padding: 10px 40px;
+    font-weight: bold;
+    text-decoration: none;
+    line-height: 5.8em;
+	color: #00008B;
+	background-color: #B2DFEE;
+
+}
+
+
+
+
+
+ul li a:hover
+{
+    background-color: #E6E6FA;
+    text-decoration: none;
+}
+
+ul li a:active
+{
+    background-color: #68838B;
+	color: #fff;
+    text-decoration: none;
+}*/
+
+
+
+
+.customFile {
+position: absolute;
+width: 210px;
+margin-left: -150px;
+cursor: default;
+height: 35px;
+z-index: 2;
+filter: alpha(opacity: 0);
+opacity: 0;
+
+}
+
+
+.fakeButton a{
+position: relative;
+z-index: 1;
+width: 70px;
+height: 20px;
+background-color: #98D1E2;
+float: left;
+text-decoration:none;
+outline: none;
+text-align:center;
+border-bottom: 1px solid #1B7272;
+border-right: 1px solid #1B7272;
+font-size:90%
+}
+
+.customFile:hover + div.fakeButton > a{
+	border-bottom: 2px solid #1B7272;
+	border-right: 2px solid #1B7272;
+	top:-1px;
+	height: 19px;
+}
+
+.customFile:active + div.fakeButton > a {
+	background-color: #8CC0CE;
+	border-bottom: 1px solid #EFEFEF;
+	border-right: 1px solid #EFEFEF;
+	top:0px;
+	height: 20px;
+}
+
+.blocker {
+position: absolute;
+z-index: 3;
+width: 150px;
+height: 21px;
+margin-left: -155px;
+
+}
+.FileName , #iBench{
+display: inline-block;
+position: absolute;
+height: 15px;
+margin-left: 0px;
+font-family: Verdana;
+font-size: 8pt;
+text-align: left;
+color: Gray;
+margin-top: 2px;
+padding-top: 1px;
+padding-left: 19px;
+}
+
+/*input[type=button] {
+
+display: inline-block;
+width: 80px;
+height: 20px;
+background-color: #98D1E2;
+
+text-decoration:none;
+outline: none;
+text-align:center;
+border-bottom: 1px solid #1B7272;
+border-right: 1px solid #1B7272;
+font-size:90%
+}
+input[type=button]:hover {
+	border-bottom: 2px solid #1B7272;
+	border-right: 2px solid #1B7272;
+
+	height: 20px;
+}
+input[type=button]:active  {
+	background-color: #8CC0CE;
+	border-bottom: 1px solid #EFEFEF;
+	border-right: 1px solid #EFEFEF;
+
+	height: 20px;
+}*/
+
+#dialog input 
+{
+    width: 150px; margin: 5px; text-align: left
+
+}
+#dialog label 
+{
+    display:inline-block; width: 120px
+
+}
