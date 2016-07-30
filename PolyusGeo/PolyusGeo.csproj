@@ -146,6 +146,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Bl_DhSample\Bl_DhSampleAreaRegistration.cs" />
+    <Compile Include="Areas\Bl_DhSample\Controllers\MainController.cs" />
     <Compile Include="Areas\ScBlockVolumeSole\Controllers\BlockVolumeController.cs" />
     <Compile Include="Areas\ScBlockVolumeSole\Controllers\SaverController.cs" />
     <Compile Include="Areas\ScBlockVolumeSole\ScBlockVolumeSoleAreaRegistration.cs" />
@@ -226,6 +228,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Bl_DhSample\Content\ajax-loader.gif" />
+    <Content Include="Areas\Bl_DhSample\Content\css.css" />
+    <Content Include="Areas\Bl_DhSample\Scripts\AutoConnect.js" />
+    <Content Include="Areas\Bl_DhSample\Scripts\ang_app.js" />
+    <Content Include="Areas\Bl_DhSample\Scripts\Library.js" />
+    <Content Include="Areas\Bl_DhSample\Scripts\Ready.js" />
     <Content Include="Areas\ScBlockVolumeSole\Content\ajax-loader.gif" />
     <Content Include="Areas\ScBlockVolumeSole\Content\css.css" />
     <Content Include="Areas\ScBlockVolumeSole\Scripts\AutoConnect.js" />
@@ -264,6 +272,10 @@
     <Content Include="Areas\ScBlockVolumeSole\Views\Saver\Save.cshtml" />
     <Content Include="Areas\ScBlockVolumeSole\Views\Saver\DbViewer.cshtml" />
     <Content Include="Areas\ScBlockVolumeSole\Views\Saver\ModalTpl.cshtml" />
+    <Content Include="Areas\Bl_DhSample\Views\web.config" />
+    <Content Include="Areas\Bl_DhSample\Views\Main\StartPage.cshtml" />
+    <Content Include="Areas\Bl_DhSample\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Bl_DhSample\Views\Main\ModalTpl.cshtml" />
     <None Include="Properties\PublishProfiles\PolyusGeo.pubxml" />
     <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -295,6 +307,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Areas\Bl_DhSample\Models\" />
     <Folder Include="Areas\ScBlockVolumeSole\Models\" />
     <Folder Include="Models\" />
   </ItemGroup>

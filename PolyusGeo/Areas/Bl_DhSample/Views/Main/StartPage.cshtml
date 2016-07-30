@@ -1,0 +1,84 @@
+﻿@using PolyusGeo.Infrastructure.Helpers;
+@{
+    ViewBag.Title = "Вынос скважин ОР в БД";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="ajax_loader" style="display:none">
+    <div class="img_container">
+        <img alt="" src="@Url.AreaContent("ajax-loader.gif")">
+    </div>
+</div>
+
+  <div class="container" ng-app="Samples">
+      <div ng-controller="DataPanel">
+          <div class="row form-group">
+              <label for="iFile1_bg" class="control-label">
+                  Загружаемые скважины
+              </label>
+              <input type="file" id="iFile1" name="iFile1" class="customFile" onchange="angular.element(this).scope().input_file_change(this)" />
+              <div id="iFile1_bg" class="input-group">
+                  <span title="Выбрать файл" class="input-group-addon ">.&nbsp;.&nbsp;.</span>
+                  <input type="text" id="iFile1FileName" class="form-control" placeholder="Загружаемые скважины">
+              </div>
+
+              <label for="iDhNum" class="control-label">
+                  Скважины
+              </label>
+              <p class="form-control-static" id="iDhNum">{{iDhNum}}</p>
+
+              <label for="iSampleNum" class="control-label">
+                  Пробы
+              </label>
+              <p class="form-control-static" id="iSampleNum" >{{iSampleNum}}</p>
+
+              <label for="isLitoExist" class="control-label">
+                  Литология
+              </label>
+              <p class="form-control-static" id="isLitoExist" >{{isLitoExist}}</p>
+
+          </div>
+
+
+          <div class="row ">
+              <input type="button" class="btn btn-primary  col-xs-3 col-sm-2 col-md-2  col-lg-1" value="Пробы" name="Пробы" ng-click="btnSetSamples()" />
+              <input type="button" class="btn btn-primary col-xs-3 col-sm-2 col-md-2 col-lg-1" value="Лито" name="btnHelp" ng-click="btnSetLito()" />
+              <input type="button" class="btn btn-primary  col-xs-3 col-sm-2 col-md-2 col-lg-1" value="В БД" name="В БД" ng-click="btnRecordToDb()" />
+          </div>
+      </div>
+      @*<div class="row ">
+          <input type="button" class="btn btn-primary  col-xs-3 col-sm-2 col-md-2  col-lg-1" value="Пробы" name="Пробы" onclick="return btnSetSample_onclick()" />
+          <input type="button" class="btn btn-primary col-xs-3 col-sm-2 col-md-2 col-lg-1" value="Лито" name="btnHelp" onclick="return btnSetLito()" />
+          <input type="button" class="btn btn-primary  col-xs-3 col-sm-2 col-md-2 col-lg-1" value="В БД" name="В БД" onclick="return btnRecordToDb()" />
+      </div>*@
+
+</div>
+
+
+
+
+@section scripts{
+    @Scripts.Render("~/Bl_DhSample/bundles/scripts");
+
+    <script type="text/javascript">
+        var oDmApp = null;
+        var oScript = null;
+        var str_Storage_Folder = null;  // Каталог структурированного хранилища файлов
+        var files_names_subfolder = "BLOCK_MODELS"; // определяет подкаталог хранилища файлов где находятся фиксированные входные файлы
+        // список фиксированных входных файлов используемых в работе команд Datamine
+        var files_names = null;
+        var pit = null;
+        var isFirstRun = true;
+        var str_Prj_Folder = null;
+        var ModalTplUrl = '@Url.Action("ModalTpl","Main",new { area = "Bl_DhSample"})';  // used in ang_app.js
+
+        var sendObjData = function (ObjData , OperationDate) {
+            var sObj = JSON.stringify(ObjData)
+            localStorage.setItem("Data", sObj);
+            localStorage.setItem("OperationDate", OperationDate);
+            window.location = '@Url.Action("Display","Saver",new { area = "ScBlockVolumeSole"})';
+        }
+
+    </script>
+}
