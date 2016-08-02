@@ -1,6 +1,6 @@
 ﻿@using PolyusGeo.Infrastructure.Helpers;
 @{
-    ViewBag.Title = "Вынос скважин ОР в БД";
+    ViewBag.Title = "Вынос скважин Забаланса в БД";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -33,17 +33,12 @@
               </label>
               <p class="form-control-static" id="iSampleNum" >{{iSampleNum}}</p>
 
-              <label for="isLitoExist" class="control-label">
-                  Литология
-              </label>
-              <p class="form-control-static" id="isLitoExist" >{{isLitoExist}}</p>
-
           </div>
 
 
           <div class="row ">
               <input type="button" class="btn btn-primary  col-xs-3 col-sm-2 col-md-2  col-lg-1" value="Пробы" name="Пробы" ng-click="btnSetSamples()" />
-              <input type="button" class="btn btn-primary col-xs-3 col-sm-2 col-md-2 col-lg-1" value="Лито" name="btnHelp" ng-click="btnSetLito()" />
+              @*<input type="button" class="btn btn-primary col-xs-3 col-sm-2 col-md-2 col-lg-1" value="Лито" name="btnHelp" ng-click="btnSetLito()" />*@
               <input type="button" class="btn btn-primary  col-xs-3 col-sm-2 col-md-2 col-lg-1" value="В БД" name="В БД" ng-click="btnRecordToDb()" />
           </div>
       </div>
@@ -54,7 +49,7 @@
 
 
 @section scripts{
-    @Scripts.Render("~/Bl_DhSample/bundles/scripts");
+    @Scripts.Render("~/Bl_ZbSample/bundles/scripts");
     <script>
 var ready = function()
 {
@@ -68,8 +63,8 @@ var ready = function()
     pit = null;
     isFirstRun = true;
     str_Prj_Folder = null;
-    ModalTplUrl = '@Url.Action("ModalTpl", "Main", new { area = "Bl_DhSample" })';  // used in ang_app.js
-    SaverPageUrl = '@Url.Action("Saver", "Main", new { area = "Bl_DhSample" })';
+    ModalTplUrl = '@Url.Action("ModalTpl", "Bl_Zb_Main", new { area = "Bl_ZbSample" })';  // used in ang_app.js
+    SaverPageUrl = '@Url.Action("Saver", "Bl_Zb_Main", new { area = "Bl_ZbSample" })';
     AutoConnect();
 
 }

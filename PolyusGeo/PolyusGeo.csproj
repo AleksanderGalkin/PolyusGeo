@@ -146,6 +146,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Bl_ZbSample\Bl_ZbSampleAreaRegistration.cs" />
+    <Compile Include="Areas\Bl_ZbSample\Controllers\MainController.cs" />
     <Compile Include="Areas\Bl_DhSample\Bl_DhSampleAreaRegistration.cs" />
     <Compile Include="Areas\Bl_DhSample\Controllers\MainController.cs" />
     <Compile Include="Areas\ScBlockVolumeSole\Controllers\BlockVolumeController.cs" />
@@ -228,6 +230,12 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Areas\Bl_ZbSample\Content\ajax-loader.gif" />
+    <Content Include="Areas\Bl_ZbSample\Content\css.css" />
+    <Content Include="Areas\Bl_ZbSample\Scripts\ang_app.js" />
+    <Content Include="Areas\Bl_ZbSample\Scripts\AutoConnect.js" />
+    <Content Include="Areas\Bl_ZbSample\Scripts\Library.js" />
+    <Content Include="Areas\Bl_ZbSample\Scripts\Ready.js" />
     <Content Include="Areas\Bl_DhSample\Content\ajax-loader.gif" />
     <Content Include="Areas\Bl_DhSample\Content\css.css" />
     <Content Include="Areas\Bl_DhSample\Scripts\AutoConnect.js" />
@@ -276,6 +284,14 @@
     <Content Include="Areas\Bl_DhSample\Views\Main\StartPage.cshtml" />
     <Content Include="Areas\Bl_DhSample\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Bl_DhSample\Views\Main\ModalTpl.cshtml" />
+    <Content Include="Areas\Bl_DhSample\Views\Main\Saver.cshtml" />
+    <Content Include="Areas\Bl_DhSample\Views\Main\ModalTplRows.cshtml" />
+    <Content Include="Areas\Bl_ZbSample\Views\Bl_Zb_Main\ModalTpl.cshtml" />
+    <Content Include="Areas\Bl_ZbSample\Views\Bl_Zb_Main\ModalTplRows.cshtml" />
+    <Content Include="Areas\Bl_ZbSample\Views\Bl_Zb_Main\Saver.cshtml" />
+    <Content Include="Areas\Bl_ZbSample\Views\Bl_Zb_Main\StartPage.cshtml" />
+    <Content Include="Areas\Bl_ZbSample\Views\Shared\_Layout.cshtml" />
+    <Content Include="Areas\Bl_ZbSample\Views\web.config" />
     <None Include="Properties\PublishProfiles\PolyusGeo.pubxml" />
     <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -308,6 +324,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Bl_DhSample\Models\" />
+    <Folder Include="Areas\Bl_ZbSample\Models\" />
     <Folder Include="Areas\ScBlockVolumeSole\Models\" />
     <Folder Include="Models\" />
   </ItemGroup>

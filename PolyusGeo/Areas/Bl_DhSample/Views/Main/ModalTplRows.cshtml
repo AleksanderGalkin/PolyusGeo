@@ -1,0 +1,87 @@
+﻿@{
+    Layout = null;
+}
+
+    <!-- Заголовок модального окна -->
+        <div class="modal-header">
+            <button type="button" class="close"  aria-hidden="true"  ng-click="cancel()">×</button>
+            <h5 class="modal-title">Заголовок</h5>
+        </div>
+        <!-- Основное содержимое модального окна -->
+        <div class="modal-body ">
+            <div class="container-fluid">
+                
+                    <div class="table">
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-hover">
+
+                                    <thead>
+                                        <tr>
+                                            <td>BHID</td>
+                                            <td>AT</td>
+                                            <td>BRG</td>
+                                            <td>DIP</td>
+                                        </tr>
+                                    </thead>
+
+                                    <tbody ng-repeat="surveys_row in dtm.surveys_rows" ng-class="{'has-error': surveys_row.error == 100,'has-success' : surveys_row.error == 0}">
+                                        <tr>
+                                            <td>{{surveys_row.BHID}}</td>
+                                            <td>{{surveys_row.AT}}</td>
+                                            <td>{{surveys_row.BRG}}</td>
+                                            <td>{{surveys_row.DIP}}</td>
+
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                <div class="table">
+                    <div class="row">
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-hover">
+
+                                <thead>
+                                    <tr>
+                                        <td>BHID</td>
+                                        <td>SAMPLE</td>
+                                        <td>FROM</td>
+                                        <td>TO</td>
+                                        <td>LENGTH</td>
+                                        <td>ROCK</td>
+                                        <td>PIT</td>
+                                    </tr>
+                                </thead>
+
+                                <tbody ng-repeat="assays_row in dtm.assays_rows" ng-class="{'has-error': assays_row.error == 100,'has-success' : assays_row.error == 0}">
+                                    <tr>
+                                        <td>{{assays_row.BHID}}</td>
+                                        <td>{{assays_row.SAMPLE}}</td>
+                                        <td>{{assays_row.FROM}}</td>
+                                        <td>{{assays_row.TO}}</td>
+                                        <td>{{assays_row.LENGTH}}</td>
+                                        <td>{{assays_row.ROCK}}</td>
+                                        <td>{{assays_row.PIT}}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+
+    
+    
+
+    
+
+        <!-- Футер модального окна -->
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" ng-click="ok()">Записать</button>
+            <button type="button" class="btn btn-warning" ng-click="cancel()">Закрыть</button>
+        </div> 

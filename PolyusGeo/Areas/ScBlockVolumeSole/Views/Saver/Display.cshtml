@@ -106,7 +106,7 @@
                         window.location = '@Url.Action("DbViewer", "Saver", new { area = "ScBlockVolumeSole" })'; 
                     },
                     error: function (err) {
-                        debugger;
+    
                         var error_text = err.responseText.match(/\<title\>[\W,\w,\d]{1,}\<\/title\>/);
                         if (error_text)
                         {

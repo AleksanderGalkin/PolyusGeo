@@ -7,20 +7,20 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace PolyusGeo.Areas.Bl_DhSample.Controllers
+namespace PolyusGeo.Areas.Bl_ZbSample.Controllers
 {
     [Export(typeof(IController)),
-   ExportMetadata("ControllerName", "Main")]
+   ExportMetadata("ControllerName", "Bl_Zb_Main")]
     [PartCreationPolicy(CreationPolicy.NonShared)]
-    public class MainController : AbstractController
+    public class Bl_Zb_MainController : AbstractController
     {
         [ImportingConstructor]
-        public MainController(IUnitOfWork UnitOfWork)
+        public Bl_Zb_MainController(IUnitOfWork UnitOfWork)
                 : base(UnitOfWork)
         {
 
         }
-        // GET: Bl_DhSample/Main
+        // GET: Bl_ZbSample/Main
         public ActionResult StartPage()
         {
             return View();
@@ -38,6 +38,23 @@ namespace PolyusGeo.Areas.Bl_DhSample.Controllers
         public ActionResult Saver()
         {
             return View();
+        }
+
+        public JsonResult GetSectors()
+        {
+
+
+            var eSelect = (from e in _unitOfWork.db.SECTOR
+                               select e)
+
+                          .ToList()
+                         .Select(x => x.SECTOR1)
+                         .ToList();
+
+ 
+
+            return Json(eSelect, JsonRequestBehavior.AllowGet);
+
         }
     }
 

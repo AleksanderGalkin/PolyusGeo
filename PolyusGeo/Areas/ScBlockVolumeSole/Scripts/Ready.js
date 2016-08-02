@@ -3,7 +3,7 @@
     AutoConnect();
 
     $(document).on('change', '.customFile', function () {
-        //  debugger;
+
         var fullFilename = $(this).val();
         var pattern_shortFilename = /[\w\d]+\.(\w{2})$/;  // получаем короткое имя файла
         var result = pattern_shortFilename.exec(fullFilename);

@@ -109,11 +109,33 @@ function btnSetSample_Ok($scope) {
 
 
 
-        //$("#iDhNum").text(getDhCountInData("dh_points"));
-        //$("#iSampleNum").text(getSampleCountInData("dh_points"));
-        //$("#isLitoExist").text("Нет");
 
         SaveDataToFile();
+
+        var fso_in = new ActiveXObject("Scripting.FileSystemObject"); 
+
+        try {
+            if (fso_in.FileExists(str_Prj_Folder + "\\lito_out.dm"))
+                fso_in.DeleteFile(str_Prj_Folder + "\\lito_out.dm")
+        }
+        catch (e) {
+            alert("Не могу удалить " + str_Prj_Folder + "\\lito_out.dm" + ". Программа будет остановлена");
+            return;
+        }
+
+
+        str_IFile5_Full = oDmApp.ActiveProject.Folder + "\\dh_points.dm"
+
+        if (fso_in.FileExists(str_IFile5_Full)) {
+
+            fso_in.CopyFile(str_IFile5_Full, str_Prj_Folder + "\\lito_out.dm");
+
+        }
+        else {
+            alert("Не могу переместить. Не найден файл: " + str_IFile5_Full);
+            return;
+        }
+
     }
     catch (e) {
         alert("Failed\nReason: " + e.description);
@@ -260,9 +282,7 @@ function btnShowDh_onclick() {
         copyRecordsToDmFilesORPoints("dh_points", data);
         oDmApp.ActiveProject.Data.LoadFile(oDmApp.ActiveProject.Folder + "\\dh_points.dm");
         oDmApp.ParseCommand("redraw-display");
-       // $("#iDhNum").text(getDhCountInData("dh_points"));
-       // $("#iSampleNum").text(getSampleCountInData("dh_points"));
-       // $("#isLitoExist").text("Нет");
+
 
     }
     catch (e) {
@@ -556,8 +576,11 @@ function SetLito($scope) {
         //    fso_in.DeleteFile(str_oFile_Full);
 
 
-        if (fso_in.FileExists(str_oFile_Root)) {
-            fso_in.CopyFile(str_oFile_Root, str_Prj_Folder + "\\lito_out.dm");
+        if (fso_in.FileExists(str_IFile5_Full)) {
+            //fso_in.CopyFile(str_oFile_Root, str_Prj_Folder + "\\lito_out.dm");
+            //debugger;
+            fso_in.CopyFile(str_IFile5_Full, str_Prj_Folder + "\\lito_out.dm");
+            
            // fso_in.MoveFile(str_oFile_Root, str_oFile_Full);
         }
         else {
@@ -568,13 +591,7 @@ function SetLito($scope) {
         $scope.iDhNum=getDhCountInData("dh_points");
         $scope.iSampleNum = getSampleCountInData("dh_points");
 
-        if (!checkLitoPitDomen("lito_out")) {
-            $scope.isLitoExist = "Нет";
-            alert("В файле результате одно или более полей ROCK, PIT, DOMEN не заполнены. ");
-        }
-        else {
-            $scope.isLitoExist = "Да";
-        }
+       
 
         //alert("Всё получилось! Смотри файлы " + str_oFile_Short + "  в  папке " + str_Storage_Folder + "\\" + str_OF_Category + "\\" + str_OF_Year + "\\" + str_OF_Month + "." + str_OF_Year);
         // конец. Раздел выполняет манипуляции с файлами и непосредственное выполнение команд
@@ -664,16 +681,16 @@ var checkLitoPitDomen = function (LitoOutDm) {
     return result;
 }
 
-var RecordToDb = function ($scope) {
-    var lito_text = $scope.isLitoExist;
-    if (lito_text !== "Да") {
-        alert("Не проставлена литология. Продолжение не возможно.");
-        return;
-    }
-    RecordCollar("lito_out");
-    RecordSurvey("lito_out");
-    RecordAssay("lito_out");
-}
+//var RecordToDb = function ($scope) {
+//    var lito_text = $scope.isLitoExist;
+//    if (lito_text !== "Да") {
+//        alert("Не проставлена литология. Продолжение не возможно.");
+//        return;
+//    }
+//    RecordCollar("lito_out");
+//    RecordSurvey("lito_out");
+//    RecordAssay("lito_out");
+//}
 
 var RecordCollar = function (LitoOutDm) {
     adParamInput_ = 1
@@ -695,13 +712,13 @@ var RecordCollar = function (LitoOutDm) {
     cmd.ActiveConnection = cn;
     cmd.CommandType = adCmdStoredProc_;
     cmd.NamedParameters = 1;
-    cmd.CommandText = " sp_DhSample_Add_CollarOR "
+    cmd.CommandText = "sp_ZbSample_Add_CollarDmp"
     cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parXCollar", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parYCollar", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parZCollar", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parEnddepth", adVarWChar_, adParamInput_, 50, ""));
-    cmd.Parameters.Append(cmd.CreateParameter("@parDomen", adVarWChar_, adParamInput_, 50, ""));
+    //cmd.Parameters.Append(cmd.CreateParameter("@parDomen", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
 
     var oDmFile = new ActiveXObject("DmFile.DmTableADO");
@@ -720,7 +737,7 @@ var RecordCollar = function (LitoOutDm) {
             cmd.Parameters.item("@parYCollar").Value = oDmFile.GetNamedColumn("YCOLLAR");
             cmd.Parameters.item("@parZCollar").Value = oDmFile.GetNamedColumn("ZCOLLAR");
             cmd.Parameters.item("@parEnddepth").Value = oDmFile.GetNamedColumn("ENDDEPTH");
-            cmd.Parameters.item("@parDomen").Value = oDmFile.GetNamedColumn("DOMEN");
+         //   cmd.Parameters.item("@parDomen").Value = oDmFile.GetNamedColumn("DOMEN");
 
             try {
                 cmd.Execute();
@@ -855,8 +872,8 @@ var RecordAssay = function (LitoOutDm) {
     cmd.Parameters.Append(cmd.CreateParameter("@parFrom", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parTo", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parLength", adVarWChar_, adParamInput_, 50, ""));
-    cmd.Parameters.Append(cmd.CreateParameter("@parRock", adVarWChar_, adParamInput_, 50, ""));
-    cmd.Parameters.Append(cmd.CreateParameter("@parPit", adVarWChar_, adParamInput_, 50, ""));
+  //  cmd.Parameters.Append(cmd.CreateParameter("@parRock", adVarWChar_, adParamInput_, 50, ""));
+  //  cmd.Parameters.Append(cmd.CreateParameter("@parPit", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
 
     var oDmFile = new ActiveXObject("DmFile.DmTableADO");
@@ -879,8 +896,8 @@ var RecordAssay = function (LitoOutDm) {
                 cmd.Parameters.item("@parFrom").Value = j;
                 cmd.Parameters.item("@parTo").Value = j + length;
                 cmd.Parameters.item("@parLength").Value = length;
-                cmd.Parameters.item("@parRock").Value = oDmFile.GetNamedColumn("ROCK");
-                cmd.Parameters.item("@parPit").Value = oDmFile.GetNamedColumn("PIT");
+           //     cmd.Parameters.item("@parRock").Value = oDmFile.GetNamedColumn("ROCK");
+            //    cmd.Parameters.item("@parPit").Value = oDmFile.GetNamedColumn("PIT");
                 try {
                     cmd.Execute();
                 }
@@ -938,7 +955,7 @@ var CollarsObj = function (LitoOutDm) {
             new_obj.YCOLLAR = oDmFile.GetNamedColumn("YCOLLAR");
             new_obj.ZCOLLAR = oDmFile.GetNamedColumn("ZCOLLAR");
             new_obj.ENDDEPTH = oDmFile.GetNamedColumn("ENDDEPTH");
-            new_obj.DOMEN = oDmFile.GetNamedColumn("DOMEN");
+        //    new_obj.DOMEN = oDmFile.GetNamedColumn("DOMEN");
             new_obj.error = -1;
             return_obj.push(new_obj);
         }
@@ -1002,8 +1019,8 @@ var AssaysObj = function (LitoOutDm) {
                 new_obj.FROM = j;
                 new_obj.TO = j + length;
                 new_obj.LENGTH = length;
-                new_obj.ROCK = oDmFile.GetNamedColumn("ROCK");
-                new_obj.PIT = oDmFile.GetNamedColumn("PIT");
+            //    new_obj.ROCK = oDmFile.GetNamedColumn("ROCK");
+            //    new_obj.PIT = oDmFile.GetNamedColumn("PIT");
                 new_obj.error = -1;
                 return_obj.push(new_obj);
             }
@@ -1038,13 +1055,13 @@ var RecordCollarObj = function (collarObj) {
     cmd.ActiveConnection = cn;
     cmd.CommandType = adCmdStoredProc_;
     cmd.NamedParameters = 1;
-    cmd.CommandText = " sp_DhSample_Add_CollarOR "
+    cmd.CommandText = " sp_ZbSample_Add_CollarDmp "
     cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parXCollar", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parYCollar", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parZCollar", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parEnddepth", adVarWChar_, adParamInput_, 50, ""));
-    cmd.Parameters.Append(cmd.CreateParameter("@parDomen", adVarWChar_, adParamInput_, 50, ""));
+ //   cmd.Parameters.Append(cmd.CreateParameter("@parDomen", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
 
     var err_count = 0;
@@ -1054,7 +1071,7 @@ var RecordCollarObj = function (collarObj) {
     cmd.Parameters.item("@parYCollar").Value = collarObj.YCOLLAR;
     cmd.Parameters.item("@parZCollar").Value = collarObj.ZCOLLAR;
     cmd.Parameters.item("@parEnddepth").Value = collarObj.ENDDEPTH;
-    cmd.Parameters.item("@parDomen").Value = collarObj.DOMEN;
+ //   cmd.Parameters.item("@parDomen").Value = collarObj.DOMEN;
 
 
     try {
@@ -1103,7 +1120,7 @@ var RecordSurveysObj = function (surveysObj) {
     cmd.ActiveConnection = cn;
     cmd.CommandType = adCmdStoredProc_;
     cmd.NamedParameters = 1;
-    cmd.CommandText = " sp_DhSample_Add_SurveyOR "
+    cmd.CommandText = " sp_ZbSample_Add_SurveyDmp "
     cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parAt", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parBrg", adVarWChar_, adParamInput_, 50, ""));
@@ -1150,8 +1167,8 @@ var RecordSurveysObj = function (surveysObj) {
 
 }
 
-var RecordAssaysObj = function (assaysObj) {
-
+var RecordAssaysObj = function (assaysObj, sector) {
+ 
     adParamInput_ = 1
     adParamOutput_ = 2
     adDouble_ = 5
@@ -1171,14 +1188,15 @@ var RecordAssaysObj = function (assaysObj) {
     cmd.ActiveConnection = cn;
     cmd.CommandType = adCmdStoredProc_;
     cmd.NamedParameters = 1;
-    cmd.CommandText = " sp_DhSample_Add_AssayOR "
+    cmd.CommandText = " sp_ZbSample_Add_AssayDmp "
     cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parSample", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parFrom", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parTo", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parLength", adVarWChar_, adParamInput_, 50, ""));
-    cmd.Parameters.Append(cmd.CreateParameter("@parRock", adVarWChar_, adParamInput_, 50, ""));
-    cmd.Parameters.Append(cmd.CreateParameter("@parPit", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parSector", adVarWChar_, adParamInput_, 50, ""));
+  //  cmd.Parameters.Append(cmd.CreateParameter("@parRock", adVarWChar_, adParamInput_, 50, ""));
+ //   cmd.Parameters.Append(cmd.CreateParameter("@parPit", adVarWChar_, adParamInput_, 50, ""));
     cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
 
    
@@ -1194,8 +1212,9 @@ var RecordAssaysObj = function (assaysObj) {
                 cmd.Parameters.item("@parFrom").Value = assaysObj[i].FROM;
                 cmd.Parameters.item("@parTo").Value = assaysObj[i].TO;
                 cmd.Parameters.item("@parLength").Value = assaysObj[i].LENGTH;
-                cmd.Parameters.item("@parRock").Value = assaysObj[i].ROCK;
-                cmd.Parameters.item("@parPit").Value = assaysObj[i].PIT;
+                cmd.Parameters.item("@parSector").Value = sector;
+            //    cmd.Parameters.item("@parRock").Value = assaysObj[i].ROCK;
+            //    cmd.Parameters.item("@parPit").Value = assaysObj[i].PIT;
 
                 
 

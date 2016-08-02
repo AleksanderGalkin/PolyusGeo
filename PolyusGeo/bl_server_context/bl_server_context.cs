@@ -61,7 +61,7 @@ namespace PolyusGeo.bl_server_context
         public virtual DbSet<S_ORE_PIT> S_ORE_PIT { get; set; }
         public virtual DbSet<S_SALDO> S_SALDO { get; set; }
         public virtual DbSet<S_ZIF> S_ZIF { get; set; }
-        public virtual DbSet<SECTOR> SECTOR { get; set; }
+        public virtual IDbSet<SECTOR> SECTOR { get; set; }
         public virtual DbSet<SFACE> SFACE { get; set; }
         public virtual DbSet<sprAreas> sprAreas { get; set; }
         public virtual DbSet<sprDirections> sprDirections { get; set; }

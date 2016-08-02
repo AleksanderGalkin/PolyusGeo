@@ -15,6 +15,7 @@ namespace PolyusGeo.Infrastructure.UoW
         IDbSet<RL_EXPLO2> RL_EXPLO2 { get; set; }
         IDbSet<RANG> RANG { get; set; }
         IDbSet<GEOLOGIST> GEOLOGIST { get; set; }
+        IDbSet<SECTOR> SECTOR { get; set; }
         int SaveChanges();
     }
 }

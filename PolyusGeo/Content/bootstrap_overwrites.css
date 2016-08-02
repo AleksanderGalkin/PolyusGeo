@@ -16,7 +16,7 @@
 
 @media screen and (max-width: 260px) {
     body {
-        font-size:9px;
+        font-size:8px;
     }
 }
 
@@ -29,18 +29,23 @@
 .modal:before {
   content: '';
   display: inline-block;
-  height: 100%;
-  vertical-align: middle;
+  height: 40%;
+  vertical-align: bottom;
   margin-right: -4px;
 }
 
 .modal-dialog {
   display: inline-block;
   text-align: left;
-  vertical-align: middle;
+  vertical-align:bottom;
 }
 
 .has-error{
     color: red;
     background-color:#FFE4E1;
+}
+
+.has-success{
+    color: green;
+    background-color:#D4F8E7;
 }

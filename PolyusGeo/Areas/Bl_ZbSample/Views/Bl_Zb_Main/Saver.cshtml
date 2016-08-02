@@ -1,0 +1,165 @@
+﻿
+@{
+    ViewBag.Title = "Saver";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" ng-app="SaverApp">
+    <div ng-controller="CollarsView">
+        <div class="table">
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-condensed table-hover">
+
+                        <thead>
+                            <tr>
+                                <td>BHID</td>
+                                <td>XCOLLAR</td>
+                                <td>YCOLLAR</td>
+                                <td>ZCOLLAR</td>
+                                <td>Глубина</td>
+                            </tr>
+                        </thead>
+
+                        <tbody ng-repeat="collar_row in collars_rows">
+                            <tr ng-click="view_row(collar_row)" ng-class="{'has-error': collar_row.error == 100,'has-success' : collar_row.error == 0}" >  
+                                <td>{{collar_row.BHID}}</td>
+                                <td>{{collar_row.XCOLLAR}}</td>
+                                <td>{{collar_row.YCOLLAR}}</td>
+                                <td>{{collar_row.ZCOLLAR}}</td>
+                                <td>{{collar_row.ENDDEPTH}}</td>
+                            </tr>
+                        </tbody>
+                   </table>
+                </div>
+            </div>
+        </div>
+     </div>
+ </div>
+
+@section scripts{
+
+    @Scripts.Render("~/Bl_ZbSample/bundles/scripts");
+
+    <script>
+
+
+
+
+        var SaverApp = angular.module("SaverApp", ["ui.bootstrap"]);
+        SaverApp.controller("CollarsView", function ($scope, $uibModal) {
+            ready();
+            var surveysObj = SurveysObj("lito_out"); 
+            var assaysObj = AssaysObj("lito_out");
+            var collarsObj = CollarsObj("lito_out")
+            $scope.collars_rows = collarsObj;
+
+            var sectors = null;
+            $.ajax({
+                url: '@Url.Action("GetSectors", "Bl_Zb_Main", new { area = "Bl_ZbSample" })',
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=utf-8",
+                success: function (result) {
+                    sectors = result;
+                    
+                },
+                error: function (err) {
+                    alert("Произошла ошибка:" + err.statusText + " " + err.responseText);
+                },
+                beforeSend: function () {
+                    $('.ajax_loader').show();
+                },
+                complete: function () {
+                    $('.ajax_loader').hide();
+                }
+            });
+
+            $scope.view_row = function (row)
+            {
+
+                var dtm = { surveys_rows: getSurveysByBhid(row.BHID, surveysObj), assays_rows: getAssaysByBhid(row.BHID, assaysObj), sectors: sectors };
+
+                var modalInstance = $uibModal.open({
+                    templateUrl: ModalTplRowsUrl,
+                    controller: 'ModalInstanceCtrl',
+                    resolve: {
+                        dtm: function () {
+                            return dtm;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
+                    var err_count = 0;
+                    err_count = RecordCollarObj(row);
+                    var a = dtm.SECTOR;
+                    err_count = err_count + RecordSurveysObj(getSurveysByBhid(row.BHID, surveysObj));
+
+                    err_count = err_count + RecordAssaysObj(getAssaysByBhid(row.BHID, assaysObj), dtm.SECTOR);
+                    if (err_count > 0)
+                    {
+                        row.error = 100;
+                    }
+                });
+            }
+
+            var getSurveysByBhid = function (Bhid, surveysObj)
+            {
+                var result_obj = [];
+                for (var i = 0; i < surveysObj.length; i++)
+                {
+                    if (surveysObj[i].BHID == Bhid)
+                    {
+                        result_obj.push(surveysObj[i]);
+                    }
+                }
+                return result_obj;
+            }
+
+            var getAssaysByBhid = function (Bhid, assaysObj) {
+                var result_obj = [];
+                for (var i = 0; i < assaysObj.length; i++) {
+                    if (assaysObj[i].BHID == Bhid) {
+                        result_obj.push(assaysObj[i]);
+                    }
+                }
+                return result_obj;
+            }
+        });
+    
+        SaverApp.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, dtm) {
+
+            $scope.dtm = dtm;
+            $scope.ok = function () {
+
+                $uibModalInstance.close();
+
+            };
+
+            $scope.cancel = function () {
+
+                $uibModalInstance.dismiss('cancel');
+            };
+        });
+
+
+    var ready = function()
+{
+
+    oDmApp = null;
+    oScript = null;
+    str_Storage_Folder = null;  // Каталог структурированного хранилища файлов
+    files_names_subfolder = "BLOCK_MODELS"; // определяет подкаталог хранилища файлов где находятся фиксированные входные файлы
+    // список фиксированных входных файлов используемых в работе команд Datamine
+    files_names = null;
+    pit = null;
+    isFirstRun = true;
+    str_Prj_Folder = null;
+    ModalTplRowsUrl = '@Url.Action("ModalTplRows", "Bl_Zb_Main", new { area = "Bl_ZbSample" })';  // used in ang_app.js
+    SaverPageUrl = '@Url.Action("Saver", "Bl_Zb_Main", new { area = "Bl_ZbSample" })';
+    AutoConnect();
+
+    }
+    </script>
+}
