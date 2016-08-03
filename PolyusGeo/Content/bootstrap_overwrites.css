@@ -12,11 +12,25 @@
     body {
         font-size:11px;
     }
+    .table-responsive .table {
+        margin-bottom:10px;
+    }
 }
 
 @media screen and (max-width: 260px) {
     body {
         font-size:8px;
+    }
+
+    .navbar-brand {
+        width: 60%;
+    }
+
+    .navbar-brand img{
+        width: 100%;
+    }
+    .table-responsive .table {
+        margin-bottom:12px;
     }
 }
 
@@ -24,20 +38,23 @@
 .modal {
   text-align: center;
   padding: 0!important;
+
 }
 
 .modal:before {
   content: '';
   display: inline-block;
-  height: 40%;
+  height: 10%;
   vertical-align: bottom;
   margin-right: -4px;
+  
 }
 
 .modal-dialog {
   display: inline-block;
   text-align: left;
   vertical-align:bottom;
+  z-index:100;
 }
 
 .has-error{
@@ -49,3 +66,7 @@
     color: green;
     background-color:#D4F8E7;
 }
+
+.table-responsive:hover {
+  overflow-x:auto;
+ }

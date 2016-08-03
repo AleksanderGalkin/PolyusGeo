@@ -5,13 +5,19 @@
     <!-- Заголовок модального окна -->
         <div class="modal-header">
             <button type="button" class="close"  aria-hidden="true"  ng-click="cancel()">×</button>
-            <h5 class="modal-title">Заголовок</h5>
+            <h5 class="modal-title">Установка номеров проб</h5>
         </div>
         <!-- Основное содержимое модального окна -->
         <div class="modal-body">
             <div class="container-fluid">
-                <div><label for="S_SAMP">Верхняя проба: </label><input id="S_SAMP" ng-model="dtm.startSample"/></div>
-                <div><label for="COL_SAMP">Количество проб: </label><input id="COL_SAMP" ng-model="dtm.numSample" /></div>
+                <div>
+                    <label for="S_SAMP" class="control-label">Верхняя проба: </label>
+                    <input id="S_SAMP" ng-model="dtm.startSample" class="form-control"/>
+                </div>
+                <div>
+                    <label for="COL_SAMP" class="control-label">Количество проб: </label>
+                    <input id="COL_SAMP" ng-model="dtm.numSample"  class="form-control" />
+                </div>
 
             </div>
         </div>
