@@ -22,7 +22,8 @@
                         </thead>
 
                         <tbody ng-repeat="collar_row in collars_rows">
-                            <tr ng-click="view_row(collar_row)" ng-class="{'has-error': collar_row.error == 100,'has-success' : collar_row.error == 0}">
+                            <tr ng-click="view_row(collar_row)" ng-class="{'has-error': collar_row.error == 100,'has-success' : collar_row.error == 0}"
+                                title="{{collar_row.message}}" >
                                 <td>{{collar_row.BHID}}</td>
                                 <td>{{collar_row.XCOLLAR}}</td>
                                 <td>{{collar_row.YCOLLAR}}</td>

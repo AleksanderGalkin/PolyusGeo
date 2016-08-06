@@ -887,7 +887,7 @@ var RecordAssay = function (LitoOutDm) {
             var startSample = Number(oDmFile.GetNamedColumn("S_SAMP").toFixed(0));
             var countSample = Number(oDmFile.GetNamedColumn("COL_SAMP").toFixed(0));
             var enddepth = Number(oDmFile.GetNamedColumn("ENDDEPTH").toFixed(3));
-            var length = Number((enddepth / countSample).toFixed(3));
+            var length = Number((enddepth / countSample).toFixed(10));
 
             for (var j = 0, sampleI = startSample; (j + length).toPrecision(5) <= countSample * length; j = j + length, sampleI = sampleI + 1) {
                 numSample = numSample + 1;
@@ -957,6 +957,7 @@ var CollarsObj = function (LitoOutDm) {
             new_obj.ENDDEPTH = oDmFile.GetNamedColumn("ENDDEPTH");
         //    new_obj.DOMEN = oDmFile.GetNamedColumn("DOMEN");
             new_obj.error = -1;
+            new_obj.message = "";
             return_obj.push(new_obj);
         }
     }
@@ -986,6 +987,7 @@ var SurveysObj = function (LitoOutDm) {
             new_obj.BRG = Number(oDmFile.GetNamedColumn("BRG")) + 90;
             new_obj.DIP = oDmFile.GetNamedColumn("DIP");
             new_obj.error = -1;
+            new_obj.message = "";
             return_obj.push(new_obj);
         }
     }
@@ -1009,19 +1011,18 @@ var AssaysObj = function (LitoOutDm) {
             var startSample = Number(oDmFile.GetNamedColumn("S_SAMP").toFixed(0));
             var countSample = Number(oDmFile.GetNamedColumn("COL_SAMP").toFixed(0));
             var enddepth = Number(oDmFile.GetNamedColumn("ENDDEPTH").toFixed(3));
-            var length = Number((enddepth / countSample).toFixed(3));
+            var length = Number((enddepth / countSample).toFixed(20));
 
             for (var j = 0, sampleI = startSample; (j + length).toPrecision(5) <= countSample * length; j = j + length, sampleI = sampleI + 1) {
                 numSample = numSample + 1;
                 var new_obj = {};
                 new_obj.BHID = oDmFile.GetNamedColumn("BHID");
                 new_obj.SAMPLE = sampleI;
-                new_obj.FROM = j;
-                new_obj.TO = j + length;
-                new_obj.LENGTH = length;
-            //    new_obj.ROCK = oDmFile.GetNamedColumn("ROCK");
-            //    new_obj.PIT = oDmFile.GetNamedColumn("PIT");
+                new_obj.FROM = j.toFixed(2);
+                new_obj.TO = Number(j + length).toFixed(2);
+                new_obj.LENGTH = length.toFixed(2);
                 new_obj.error = -1;
+                new_obj.message = "";
                 return_obj.push(new_obj);
             }
         }
@@ -1076,19 +1077,23 @@ var RecordCollarObj = function (collarObj) {
 
     try {
         collarObj.error = 0;
+        collarObj.message = "";
         cmd.Execute();
     }
     catch (e) {
         err_count++;
         collarObj.error = 100;
         if (e.description.indexOf('duplicate') > -1) {
-         
+            collarObj.message = " Такая запись уже есть в БД. "
         }
         else
-            alert("Failed\nReason: " + e.description);
+            collarObj.message = e.description;
+            
 
     }
     if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
+        collarObj.error = 100;
+        collarObj.message = cmd.Parameters.item("@parError").Value;
         err_count++;
     }
 
@@ -1140,6 +1145,7 @@ var RecordSurveysObj = function (surveysObj) {
 
             try {
                 surveysObj[i].error = 0;
+                surveysObj[i].message = "";
                 cmd.Execute();
             }
             catch (e) {
@@ -1147,17 +1153,18 @@ var RecordSurveysObj = function (surveysObj) {
                 surveysObj[i].error = 100;
                 if (e.description.indexOf('duplicate') > -1) {
                     var iStr = Number(i) + 1;
-                 //   alert('SurveysOR. Запись№ ' + iStr + ' уже есть в БД');
+                    surveysObj[i].message = " Такая запись уже есть в БД. "
                 }
                 else
-                    alert("Failed\nReason: " + e.description);
+                    surveysObj[i].message = e.description;
 
             }
             if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
                 err_count++;
+                surveysObj[i].error = 100;
                 var iStr = Number(i) + 1;
                
-              //  alert('SurveysOR. Запись№ ' + iStr + '. ' + cmd.Parameters.item("@parError").Value);
+                surveysObj[i].message = cmd.Parameters.item("@parError").Value;
             }
         
     }
@@ -1220,6 +1227,7 @@ var RecordAssaysObj = function (assaysObj, sector) {
 
                 try {
                     assaysObj[i].error = 0;
+                    assaysObj[i].message = "";
                     cmd.Execute();
                 }
                 catch (e) {
@@ -1227,18 +1235,17 @@ var RecordAssaysObj = function (assaysObj, sector) {
                     assaysObj[i].error = 100;
                     if (e.description.indexOf('duplicate') > -1) {
                         var iStr = Number(i) + 1;
-  
-                      //  alert('AssaysOR. Запись№ ' + iStr + ' уже есть в БД');
+                        assaysObj[i].message = " Такая запись уже есть в БД. "
                     }
                     else
-                        alert("Failed\nReason: " + e.description);
+                        assaysObj[i].message = e.description;
 
                 }
                 if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
+                    assaysObj[i].error = 100;
                     err_count++;
                     var iStr = Number(i) + 1;
-                    
-                  //  alert('AssaysOR. Запись№ ' + iStr + '. ' + cmd.Parameters.item("@parError").Value);
+                    assaysObj[i].message = cmd.Parameters.item("@parError").Value;
                 }
             
         

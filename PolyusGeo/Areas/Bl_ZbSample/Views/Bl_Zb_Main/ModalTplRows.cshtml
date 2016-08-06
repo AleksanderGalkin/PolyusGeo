@@ -35,7 +35,7 @@
                             </thead>
 
                             <tbody ng-repeat="surveys_row in dtm.surveys_rows" ng-class="{'has-error': surveys_row.error == 100,'has-success' : surveys_row.error == 0}">
-                                <tr>
+                                <tr title="{{surveys_row.message}}">
                                     <td>{{surveys_row.BHID}}</td>
                                     <td>{{surveys_row.AT}}</td>
                                     <td>{{surveys_row.BRG}}</td>
@@ -64,7 +64,7 @@
                             </thead>
 
                             <tbody ng-repeat="assays_row in dtm.assays_rows" ng-class="{'has-error': assays_row.error == 100,'has-success' : assays_row.error == 0}">
-                                <tr>
+                                <tr title="{{assays_row.message}}">
                                     <td>{{assays_row.BHID}}</td>
                                     <td>{{assays_row.SAMPLE}}</td>
                                     <td>{{assays_row.FROM}}</td>
