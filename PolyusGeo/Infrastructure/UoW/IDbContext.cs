@@ -16,9 +16,6 @@ namespace PolyusGeo.Infrastructure.UoW
         IDbSet<RANG> RANG { get; set; }
         IDbSet<GEOLOGIST> GEOLOGIST { get; set; }
         IDbSet<SECTOR> SECTOR { get; set; }
-        IDbSet<COLLAR_OR> COLLAR_OR { get; set; }
-        IDbSet<SURVEYS_OR> SURVEYS_OR { get; set; }
-        IDbSet<ASSAYS_OR> ASSAYS_OR { get; set; }
         int SaveChanges();
     }
 }
