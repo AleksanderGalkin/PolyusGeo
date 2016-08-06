@@ -19,14 +19,14 @@ namespace PolyusGeo.bl_server_context
 
         public virtual DbSet<ASSAYS> ASSAYS { get; set; }
         public virtual DbSet<ASSAYS_DMP> ASSAYS_DMP { get; set; }
-        public virtual DbSet<ASSAYS_OR> ASSAYS_OR { get; set; }
+        public virtual IDbSet<ASSAYS_OR> ASSAYS_OR { get; set; }
         public virtual DbSet<ASSAYS_STRG> ASSAYS_STRG { get; set; }
         public virtual DbSet<ASSAYS2> ASSAYS2 { get; set; }
         public virtual DbSet<ASSAYS2_CS> ASSAYS2_CS { get; set; }
         public virtual DbSet<BLOCK_ZAPASOV> BLOCK_ZAPASOV { get; set; }
         public virtual DbSet<COLLAR> COLLAR { get; set; }
         public virtual DbSet<COLLAR_DMP> COLLAR_DMP { get; set; }
-        public virtual DbSet<COLLAR_OR> COLLAR_OR { get; set; }
+        public virtual IDbSet<COLLAR_OR> COLLAR_OR { get; set; }
         public virtual DbSet<COLLAR_STRG> COLLAR_STRG { get; set; }
         public virtual DbSet<COLLAR2> COLLAR2 { get; set; }
         public virtual DbSet<DOMEN> DOMEN { get; set; }
@@ -67,7 +67,7 @@ namespace PolyusGeo.bl_server_context
         public virtual DbSet<sprDirections> sprDirections { get; set; }
         public virtual DbSet<sprOreRepGroups> sprOreRepGroups { get; set; }
         public virtual DbSet<SURVEYS_DMP> SURVEYS_DMP { get; set; }
-        public virtual DbSet<SURVEYS_OR> SURVEYS_OR { get; set; }
+        public virtual IDbSet<SURVEYS_OR> SURVEYS_OR { get; set; }
         public virtual DbSet<SURVEYS_STRG> SURVEYS_STRG { get; set; }
         public virtual DbSet<QFACE> QFACE { get; set; }
         public virtual DbSet<RV_PAL> RV_PAL { get; set; }

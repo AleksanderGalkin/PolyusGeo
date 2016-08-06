@@ -1,4 +1,5 @@
 ﻿using MyBlog.Controllers;
+using PolyusGeo.Areas.Bl_DhSample.Models;
 using PolyusGeo.Infrastructure.UoW;
 using System;
 using System.Collections.Generic;
@@ -39,6 +40,20 @@ namespace PolyusGeo.Areas.Bl_DhSample.Controllers
         {
             return View();
         }
+
+
+        public JsonResult SaveDh(Dtm_Dh_Or InModel)
+        {
+            SaveDhResult json_result = new SaveDhResult();
+
+
+
+
+
+            return Json(json_result, JsonRequestBehavior.AllowGet);
+
+        }
+
     }
 
 

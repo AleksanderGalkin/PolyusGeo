@@ -146,6 +146,8 @@
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
+    <Compile Include="Areas\Bl_DhSample\Models\Dtm_Dh_Or.cs" />
+    <Compile Include="Areas\Bl_DhSample\Models\SaveDhResult.cs" />
     <Compile Include="Areas\Bl_ZbSample\Bl_ZbSampleAreaRegistration.cs" />
     <Compile Include="Areas\Bl_ZbSample\Controllers\MainController.cs" />
     <Compile Include="Areas\Bl_DhSample\Bl_DhSampleAreaRegistration.cs" />
@@ -323,7 +325,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Areas\Bl_DhSample\Models\" />
     <Folder Include="Areas\Bl_ZbSample\Models\" />
     <Folder Include="Areas\ScBlockVolumeSole\Models\" />
     <Folder Include="Models\" />
