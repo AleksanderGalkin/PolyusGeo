@@ -150,6 +150,8 @@
     <Compile Include="Areas\Bl_ZbSample\Controllers\MainController.cs" />
     <Compile Include="Areas\Bl_DhSample\Bl_DhSampleAreaRegistration.cs" />
     <Compile Include="Areas\Bl_DhSample\Controllers\MainController.cs" />
+    <Compile Include="Areas\Ol_ErDhSample\Controllers\MainController.cs" />
+    <Compile Include="Areas\Ol_ErDhSample\Ol_ErDhSampleAreaRegistration.cs" />
     <Compile Include="Areas\ScBlockVolumeSole\Controllers\BlockVolumeController.cs" />
     <Compile Include="Areas\ScBlockVolumeSole\Controllers\SaverController.cs" />
     <Compile Include="Areas\ScBlockVolumeSole\ScBlockVolumeSoleAreaRegistration.cs" />
@@ -242,6 +244,11 @@
     <Content Include="Areas\Bl_DhSample\Scripts\ang_app.js" />
     <Content Include="Areas\Bl_DhSample\Scripts\Library.js" />
     <Content Include="Areas\Bl_DhSample\Scripts\Ready.js" />
+    <Content Include="Areas\Ol_ErDhSample\Content\ajax-loader.gif" />
+    <Content Include="Areas\Ol_ErDhSample\Content\css.css" />
+    <Content Include="Areas\Ol_ErDhSample\Scripts\ang_app.js" />
+    <Content Include="Areas\Ol_ErDhSample\Scripts\AutoConnect.js" />
+    <Content Include="Areas\Ol_ErDhSample\Scripts\Library.js" />
     <Content Include="Areas\ScBlockVolumeSole\Content\ajax-loader.gif" />
     <Content Include="Areas\ScBlockVolumeSole\Content\css.css" />
     <Content Include="Areas\ScBlockVolumeSole\Scripts\AutoConnect.js" />
@@ -292,6 +299,12 @@
     <Content Include="Areas\Bl_ZbSample\Views\Bl_Zb_Main\StartPage.cshtml" />
     <Content Include="Areas\Bl_ZbSample\Views\Shared\_Layout.cshtml" />
     <Content Include="Areas\Bl_ZbSample\Views\web.config" />
+    <Content Include="Areas\Ol_ErDhSample\Views\web.config" />
+    <Content Include="Areas\Ol_ErDhSample\Views\Ol_ErDhSample_Main_\StartPage.cshtml" />
+    <Content Include="Areas\Ol_ErDhSample\Views\Ol_ErDhSample_Main_\ModalTpl.cshtml" />
+    <Content Include="Areas\Ol_ErDhSample\Views\Ol_ErDhSample_Main_\ModalTplRows.cshtml" />
+    <Content Include="Areas\Ol_ErDhSample\Views\Ol_ErDhSample_Main_\Saver.cshtml" />
+    <Content Include="Areas\Ol_ErDhSample\Views\Shared\_Layout.cshtml" />
     <None Include="Properties\PublishProfiles\PolyusGeo.pubxml" />
     <Content Include="Scripts\angular.min.js.map" />
     <None Include="Scripts\jquery-1.10.2.intellisense.js" />
@@ -325,6 +338,7 @@
     <Folder Include="App_Data\" />
     <Folder Include="Areas\Bl_DhSample\Models\" />
     <Folder Include="Areas\Bl_ZbSample\Models\" />
+    <Folder Include="Areas\Ol_ErDhSample\Models\" />
     <Folder Include="Areas\ScBlockVolumeSole\Models\" />
     <Folder Include="Models\" />
   </ItemGroup>

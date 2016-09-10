@@ -27,13 +27,23 @@
                 <ul class="nav navbar-nav">
                     <li class="dropdown">
                         <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
-                            Datamine
+                            Datamine Благодатный
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu">
                             <li class="nav-tabs">@Html.ActionLink("Объёмы по блокам", "Index", "BlockVolume", new { area = "ScBlockVolumeSole" },null)</li>
                             <li class="nav-tabs">@Html.ActionLink("ОР в БД", "StartPage", "Main", new { area = "Bl_DhSample" }, null)</li>
                             <li class="nav-tabs">@Html.ActionLink("ЗБ в БД", "StartPage", "Bl_Zb_Main", new { area = "Bl_ZbSample" }, null)</li>
+                        </ul>
+                    </li>
+
+                    <li class="dropdown">
+                        <a class="dropdown-toggle" role="button" data-toggle="dropdown" href="#">
+                            Datamine Олимпиада
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-tabs">@Html.ActionLink("ЭР в БД", "StartPage", "Ol_ErDhSample_Main_", new { area = "Ol_ErDhSample" }, null)</li>
                         </ul>
                     </li>
 

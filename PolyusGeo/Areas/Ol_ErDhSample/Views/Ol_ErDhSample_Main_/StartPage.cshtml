@@ -1,0 +1,73 @@
+﻿@using PolyusGeo.Infrastructure.Helpers;
+@{
+    ViewBag.Title = "Вынос скважин ЭР в БД";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+<div class="ajax_loader" style="display:none">
+    <div class="img_container">
+        <img alt="" src="@Url.AreaContent("ajax-loader.gif")">
+    </div>
+</div>
+
+<div class="container" ng-app="Samples">
+    <div ng-controller="DataPanel">
+        <div class="row form-group">
+            <label for="iFile1_bg" class="control-label">
+                Загружаемые скважины
+            </label>
+            <input type="file" id="iFile1" name="iFile1" class="customFile" onchange="angular.element(this).scope().input_file_change(this)" />
+            <div id="iFile1_bg" class="input-group">
+                <span title="Выбрать файл" class="input-group-addon ">.&nbsp;.&nbsp;.</span>
+                <input type="text" id="iFile1FileName" class="form-control" placeholder="Загружаемые скважины">
+            </div>
+
+            <label for="iDhNum" class="control-label">
+                Скважины
+            </label>
+            <p class="form-control-static" id="iDhNum">{{iDhNum}}</p>
+
+            <label for="iSampleNum" class="control-label">
+                Пробы
+            </label>
+            <p class="form-control-static" id="iSampleNum">{{iSampleNum}}</p>
+
+           
+
+        </div>
+
+
+        <div class="row ">
+            <input type="button" class="btn btn-primary  col-xs-3 col-sm-2 col-md-2  col-lg-1" value="Пробы" name="Пробы" ng-click="btnSetSamples()" />
+            <input type="button" class="btn btn-primary  col-xs-3 col-sm-2 col-md-2 col-lg-1" value="В БД" name="В БД" ng-click="btnRecordToDb()" />
+        </div>
+    </div>
+
+</div>
+
+
+
+
+@section scripts{
+    @Scripts.Render("~/Ol_ErDhSample/bundles/scripts");
+    <script>
+var ready = function()
+{
+
+    oDmApp = null;
+    oScript = null;
+    str_Storage_Folder = null;  // Каталог структурированного хранилища файлов
+    files_names_subfolder = "BLOCK_MODELS"; // определяет подкаталог хранилища файлов где находятся фиксированные входные файлы
+    // список фиксированных входных файлов используемых в работе команд Datamine
+    files_names = null;
+    pit = null;
+    isFirstRun = true;
+    str_Prj_Folder = null;
+    ModalTplUrl = '@Url.Action("ModalTpl", "Ol_ErDhSample_Main_", new { area = "Ol_ErDhSample" })';  // used in ang_app.js
+    SaverPageUrl = '@Url.Action("Saver", "Ol_ErDhSample_Main_", new { area = "Ol_ErDhSample" })';
+    AutoConnect();
+
+}
+    </script>
+}

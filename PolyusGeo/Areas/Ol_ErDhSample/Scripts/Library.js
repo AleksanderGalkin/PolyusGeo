@@ -1,0 +1,1420 @@
+﻿function btnHelp_onclick() {
+    var features = "status=no,toolbar=no,menubar=no,location=no,scrollbars=yes,resizable=yes";
+    var common = "_blank"
+    var installpath = oDmApp.Options.HelpFolder;
+    installpath = installpath.replace(" ", "%20");
+    var helpcommand = "mk:@MSITStore:" + installpath + "/DatamineStudio.chm::/Studio_3_General/Concept_Studio%203%20Scripting%20Overview.htm";
+    window.open(helpcommand, common, features);
+}
+function btnSetSample_Ok($scope) {
+    try {
+
+           var try100times = 1;
+            var old_pointstring = "";
+            alert("Указывайте скважины нажатием ПКМ");
+            oDmApp.ParseCommand("deselect-all-points"); //отменяет выделение точек
+            var ovPTNS = oDmApp.ActiveProject.Design.GetCurrentPointsObject(false);
+
+            ovPTNS.PointsStyle = 0x2c;											// Устанавливаем символ точки (окружность с точкой внутри)
+            ovPTNS.Color = 0x808080;											// Устанавливаем цвет точки
+            ovPTNS.PointsSize = 0xc8;											// Устанавливаем размер точки
+            ovPTNS.PointsMode = 0x0;											// Устанавливаем системные настройки точки (без легенды)
+            ovPTNS.ColorMode = 0x0;											// Устанавливаем системные настройки цвета (без легенды)
+
+            ovPTNS.FormatLabels.InitLabels(3, 1)							// выделяем количество ячееек
+            ovPTNS.FormatLabels.SetAt(1, "S_SAMP")
+            ovPTNS.FormatLabels.SetAt(2, "COL_SAMP")
+			ovPTNS.FormatLabels.SetAt(3, "BHID")
+
+			ovPTNS.FormatLabels.SetTextPosition(3);							// расположение label относительно точки (3-слева) SetTextColorColumn(nId, bsColumnName)  SetTextColorLegend(nId, pLeg) SetTextColorMode(nId, eMode)
+			ovPTNS.FormatLabels.RowHeight = 450;
+			ovPTNS.FormatLabels.SetTextOffset (700,0);
+            ovPTNS.FormatLabels.SetTextFontHeight(1, 1000);					// размер шрифта
+            ovPTNS.FormatLabels.SetTextColor(1, 0xF0FFF0);					// белый цвет надписи
+            ovPTNS.FormatLabels.SetTextFontHeight(2, 700);					// размер шрифта
+            ovPTNS.FormatLabels.SetTextColor(2, 0x884533);					// белый цвет надписи
+            ovPTNS.FormatLabels.SetTextFontHeight(3, 550);					// размер шрифта
+            ovPTNS.FormatLabels.SetTextColor(3, 0xcca533);					// белый цвет надписи
+
+            var path_template = "\\\\OGK-S-APPMINE01\\MDB\\tpl\\";
+            var parTpl = "FieldDhSample";
+
+
+            var LegendSample = oDmApp.LegendService.UserLegends.Item(parTpl + "2");
+            if (LegendSample == null) {
+                oDmApp.LegendService.CurrentDocument.FilePath = path_template + parTpl + "2.elg"
+                oDmApp.LegendService.CurrentDocument.Load()
+                LegendSample = oDmApp.LegendService.CurrentDocument.Legends.Item(parTpl + "2");
+                oDmApp.LegendService.UserLegends.Add(LegendSample);
+                LegendSample = oDmApp.LegendService.UserLegends.Item(parTpl + "2");
+            }
+
+            var LegendColSample = oDmApp.LegendService.UserLegends.Item(parTpl + "3");
+            if (LegendColSample == null) {
+                oDmApp.LegendService.CurrentDocument.FilePath = path_template + parTpl + "3.elg"
+                oDmApp.LegendService.CurrentDocument.Load()
+                LegendColSample = oDmApp.LegendService.CurrentDocument.Legends.Item(parTpl + "3");
+                oDmApp.LegendService.UserLegends.Add(LegendColSample);
+                LegendColSample = oDmApp.LegendService.UserLegends.Item(parTpl + "3");
+            }
+
+
+            var LegendDhBhid = oDmApp.LegendService.UserLegends.Item(parTpl + "1");
+            if (LegendDhBhid == null) {
+                oDmApp.LegendService.CurrentDocument.FilePath = path_template + parTpl + "1.elg"
+                oDmApp.LegendService.CurrentDocument.Load()
+                LegendDhBhid = oDmApp.LegendService.CurrentDocument.Legends.Item(parTpl + "1");
+                oDmApp.LegendService.UserLegends.Add(LegendDhBhid);
+                LegendDhBhid = oDmApp.LegendService.UserLegends.Item(parTpl + "1");
+            }
+
+
+            ovPTNS.FormatLabels.SetTextColorColumn(1, "OBSOLETE");
+            ovPTNS.FormatLabels.SetTextColorLegend(1, LegendSample);
+            ovPTNS.FormatLabels.SetTextColorMode(1, 2);
+            ovPTNS.FormatLabels.SetTextColorColumn(2, "OBSOLETE");
+            ovPTNS.FormatLabels.SetTextColorLegend(2, LegendColSample);
+            ovPTNS.FormatLabels.SetTextColorMode(2, 2);
+            ovPTNS.FormatLabels.SetTextColorColumn(3, "OBSOLETE");
+            ovPTNS.FormatLabels.SetTextColorLegend(3, LegendDhBhid);
+            ovPTNS.FormatLabels.SetTextColorMode(3, 2);
+
+            //ovPTNS.ColorMode = 2;
+            //ovPTNS.Legend = LegendDhBhid;
+            //ovPTNS.DataColumn = "OBSOLETE";
+
+
+            oDmApp.ParseCommand("redraw-display");
+
+           //oDmApp.ParseCommand("add-attributes"); 			// Добавление аттрибута через интерфейс
+			//ovPTNS.ObjectData.Schema.AddColumn("KOL", 2, 0);	// Добавление аттрибута KOL программно
+            var try100times = 1;
+            while (try100times <= 100) {
+                oDmApp.ActiveProject.Design.Selection.PickPoint("Pick Point");  		// Комманда ожидает указания ьышью точки на экране
+                var pointstring = oDmApp.ActiveProject.Design.Selection.PointString; // получаем координту отмеченной точки
+
+                if (old_pointstring.slice(0, old_pointstring.lastIndexOf(",")) == pointstring.slice(0, pointstring.lastIndexOf(","))
+                    && old_ViewCentreX == oDmApp.ActiveProject.Design.ViewDef.ViewCentreX
+                    && old_ViewCentreY == oDmApp.ActiveProject.Design.ViewDef.ViewCentreY
+                    && old_ViewCentreZ == oDmApp.ActiveProject.Design.ViewDef.ViewCentreZ) break;  // если пользователь нажал ESС то значение старой точки = значению новой точки, значит выходим из скрипта
+
+                if (old_pointstring.slice(0, old_pointstring.lastIndexOf(",")) == pointstring.slice(0, pointstring.lastIndexOf(","))
+                    && (old_ViewCentreX != oDmApp.ActiveProject.Design.ViewDef.ViewCentreX
+                    || old_ViewCentreY != oDmApp.ActiveProject.Design.ViewDef.ViewCentreY
+                    || old_ViewCentreZ != oDmApp.ActiveProject.Design.ViewDef.ViewCentreZ)) {
+
+                                    old_ViewCentreX = oDmApp.ActiveProject.Design.ViewDef.ViewCentreX;
+                                    old_ViewCentreY = oDmApp.ActiveProject.Design.ViewDef.ViewCentreY;
+                                    old_ViewCentreZ = oDmApp.ActiveProject.Design.ViewDef.ViewCentreZ;
+                                    oDmApp.ParseCommand("redraw-display");
+                                    continue;
+
+                 }
+
+
+                var S_SAMP;
+                if (!(S_SAMP = document.getElementById("S_SAMP").value)) {
+                    S_SAMP = 0;
+                }
+                str_S_SAMP = Number(S_SAMP);
+                var COL_SAMP;
+                if (!(COL_SAMP = document.getElementById("COL_SAMP").value)) {
+                    COL_SAMP = 0;
+                }
+                str_COL_SAMP = Number(COL_SAMP);
+                str = "edit-attributes " + pointstring + " @attribute='S_SAMP'," + str_S_SAMP;
+
+                old_pointstring = pointstring;
+                old_ViewCentreX = oDmApp.ActiveProject.Design.ViewDef.ViewCentreX;
+                old_ViewCentreY = oDmApp.ActiveProject.Design.ViewDef.ViewCentreY;
+                old_ViewCentreZ = oDmApp.ActiveProject.Design.ViewDef.ViewCentreZ;
+
+                oDmApp.ParseCommand(str);
+                oDmApp.ParseCommand("cancel-command");
+                str = "edit-attributes " + pointstring + " @attribute='COL_SAMP'," + str_COL_SAMP;
+                old_pointstring = pointstring;
+                oDmApp.ParseCommand(str);
+                oDmApp.ParseCommand("cancel-command");
+                //ovSTNS.IsShown = true;						// показываем слой строк, скрытый ранее
+                oDmApp.ParseCommand("redraw-display");		//перерисовываем экран
+
+                try100times++;
+                $scope.dtm.startSample = Number(str_S_SAMP) + Number(str_COL_SAMP);
+            }	//while (try100times <= 100)
+            $("#iDhNum").text(getDhCountInData("dh_points"));
+            $("#iSampleNum").text(getSampleCountInData("dh_points"));
+          
+
+            SaveDataToFile();
+
+
+
+
+
+    }
+    catch (e) {
+        alert("Failed\nReason: " + e.description);
+    }
+}
+
+function btnShowDh_onclick() {
+    try {
+        var fso_in = new ActiveXObject("Scripting.FileSystemObject"); // Объект FSO
+
+
+        if (!(str_IFile1_Full = document.getElementById("iFile1").value)) {
+            alert("Выберите входной файл устьев скважин");
+            return;
+        }
+
+        try {
+            if (fso_in.FileExists(oDmApp.ActiveProject.Folder + "\\dh_points.dm"))
+                fso_in.DeleteFile(oDmApp.ActiveProject.Folder + "\\dh_points.dm")
+        }
+        catch (e) {
+            alert("Не могу удалить " + oDmApp.ActiveProject.Folder + "\\dh_points.dm" + ". Программа будет остановлена");
+            return;
+        }
+        var pattern_exp = /\.\w{2,3}$/;
+        var result = pattern_exp.exec(str_IFile1_Full);
+        if (result != null)
+            var exp = result[0].substr(1);
+        else {
+            alert("Неизвестный тип входного файла. Выполнение невозможно");
+            return;
+        }
+        var data = null;
+        if (exp == "csv") {
+            filehandle = fso_in.OpenTextFile(str_IFile1_Full, 1);
+            contents = filehandle.ReadAll();
+            filehandle.close();
+            var options = new Object();
+            options.separator = ";";
+            data = $.csv.toObjects(contents, options);
+        }
+        if (exp == "dm") {
+            data = DmFileToObj(str_IFile1_Full);
+        }
+
+        oDmApp.ParseCommand("inputd &OUT=dh_points" +
+            " 'dh_points'" +
+            " 'XCOLLAR'" +
+            " 'N'" +
+            " 'y'" +
+            " '-'" +
+            " 'YCOLLAR'" +
+            " 'n'" +
+            " 'Y'" +
+            " '-'" +
+            " 'ZCOLLAR'" +
+            " 'n'" +
+            " 'y'" +
+            " '-'" +
+            " 'SYMBOL'" +
+            " 'n'" +
+            " 'Y'" +
+            " '-'" +
+            " 'COLOUR'" +
+            " 'n'" +
+            " 'Y'" +
+            " '-'" +
+            " 'BHID'" +
+            " 'A'" +
+            " '20'" +
+            " 'y'" +
+            " '-'" +
+            " 'GORIZONT'" +
+            " 'A'" +
+            " '20'" +
+            " 'y'" +
+            " '-'" +
+            " 'BLOCK'" +
+            " 'A'" +
+            " '20'" +
+            " 'y'" +
+            " '-'" +
+            " 'HOLE'" +
+            " 'A'" +
+            " '20'" +
+            " 'y'" +
+            " '-'" +
+            " 'ENDDEPTH'" +
+            " 'n'" +
+            " 'Y'" +
+            " '-'" +
+            " 'LAYER'" +
+            " 'A'" +
+            " '40'" +
+            " 'y'" +
+            " '-'" +
+            " 'DRILL_TY'" +
+            " 'A'" +
+            " '20'" +
+            " 'y'" +
+            " '-'" +
+            " 'BRG'" +
+            " 'n'" +
+            " 'Y'" +
+            " '-'" +
+            " 'DIP'" +
+            " 'n'" +
+            " 'Y'" +
+            " '-'" +
+            " 'OBSOLETE'" +
+            " 'n'" +
+            " 'Y'" +
+            " '-'" +
+            " 'S_SAMP'" +
+            " 'n'" +
+            " 'Y'" +
+            " '0'" +
+            " 'COL_SAMP'" +
+            " 'n'" +
+            " 'Y'" +
+            " '0'" +
+            " 'ERRCOL'" +
+            " 'A'" +
+            " '80'" +
+            " 'y'" +
+            " '-'" +
+            " 'ERRSUR'" +
+            " 'A'" +
+            " '80'" +
+            " 'y'" +
+            " '-'" +
+            " 'ERRAS'" +
+            " 'A'" +
+            " '80'" +
+            " 'y'" +
+            " '-'" +
+            " 'ERRVED'" +
+            " 'A'" +
+            " '80'" +
+            " 'y'" +
+            " '-'" +
+            " '!'" +
+            " 'y'");
+
+        copyRecordsToDmFilesORPoints("dh_points", data);
+        oDmApp.ActiveProject.Data.LoadFile(oDmApp.ActiveProject.Folder + "\\dh_points.dm");
+        oDmApp.ParseCommand("redraw-display");
+       // $("#iDhNum").text(getDhCountInData("dh_points"));
+       // $("#iSampleNum").text(getSampleCountInData("dh_points"));
+       // $("#isLitoExist").text("Нет");
+
+    }
+    catch (e) {
+        alert("Failed\nReason: " + e.description);
+        if (oDmApp) oDmApp.Quit(); // release the session to close it down
+    }
+}
+
+var DmFileToObj = function (filePath) {
+    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+    oDmFile.Open(filePath, false);
+    var data = [];
+    var i = 0;
+    for (oDmFile.MoveFirst() ; !oDmFile.EOF; oDmFile.MoveNext(), i++) {
+        data[i] = new Object();
+        data[i].BHID = oDmFile.GetNamedColumn("BHID");
+        data[i].XCOLLAR = oDmFile.GetNamedColumn("XCOLLAR");
+        data[i].YCOLLAR = oDmFile.GetNamedColumn("YCOLLAR");
+        data[i].ZCOLLAR = oDmFile.GetNamedColumn("ZCOLLAR");
+        data[i].GORIZONT = oDmFile.GetNamedColumn("GORIZONT");
+        data[i].BLOCK = oDmFile.GetNamedColumn("BLOCK");
+        data[i].HOLE = oDmFile.GetNamedColumn("HOLE");
+        data[i].ENDDEPTH = oDmFile.GetNamedColumn("ENDDEPTH");
+        data[i].LAYER = oDmFile.GetNamedColumn("LAYER");
+        data[i].DRILL_TY = oDmFile.GetNamedColumn("DRILL_TY");
+        //data[i].BRG = oDmFile.GetNamedColumn("BRG");
+        //data[i].DIP = oDmFile.GetNamedColumn("DIP");
+
+    }
+    oDmFile.Close();
+    return data;
+};
+
+var copyRecordsToDmFilesORPoints = function (DhOrPointsDm, DhOrPointsObjects) {
+    try {
+        var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+        oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + DhOrPointsDm + ".dm", false);
+
+        if (DhOrPointsObjects.length == 0) {
+            alert("Нет скважин");
+            return;
+        }
+
+        var ObsoleteDhs = GetObsoleteDhs(DhOrPointsObjects);
+
+        for (var i = 0 ; i < DhOrPointsObjects.length ; i++) {
+            oDmFile.AddRow();
+            oDmFile.SetNamedColumn("BHID", DhOrPointsObjects[i].BHID !== null ? DhOrPointsObjects[i].BHID : "");
+            oDmFile.SetNamedColumn("XCOLLAR", DhOrPointsObjects[i].XCOLLAR !== null ? Number(DhOrPointsObjects[i].XCOLLAR.toFixed(4)) : 0);
+            oDmFile.SetNamedColumn("YCOLLAR", DhOrPointsObjects[i].YCOLLAR !== null ? Number(DhOrPointsObjects[i].YCOLLAR.toFixed(4)) : 0);
+            oDmFile.SetNamedColumn("ZCOLLAR", DhOrPointsObjects[i].ZCOLLAR !== null ? Number(DhOrPointsObjects[i].ZCOLLAR.toFixed(4)) : 0);
+            oDmFile.SetNamedColumn("GORIZONT", DhOrPointsObjects[i].GORIZONT !== null ? Number(DhOrPointsObjects[i].GORIZONT) : "");
+            oDmFile.SetNamedColumn("BLOCK", DhOrPointsObjects[i].BLOCK !== null ? DhOrPointsObjects[i].BLOCK : "");
+            oDmFile.SetNamedColumn("HOLE", DhOrPointsObjects[i].HOLE !== null ? DhOrPointsObjects[i].HOLE : "");
+            oDmFile.SetNamedColumn("ENDDEPTH", DhOrPointsObjects[i].ENDDEPTH !== null ? Number(DhOrPointsObjects[i].ENDDEPTH) : 0);
+            oDmFile.SetNamedColumn("LAYER", DhOrPointsObjects[i].LAYER !== null ? DhOrPointsObjects[i].LAYER : 0);
+            oDmFile.SetNamedColumn("DRILL_TY", DhOrPointsObjects[i].DRILL_TY !== null ? DhOrPointsObjects[i].DRILL_TY : 0);
+            //oDmFile.SetNamedColumn("BRG", DhOrPointsObjects[i].BRG !== null ? Number(DhOrPointsObjects[i].BRG) : 0);
+            //oDmFile.SetNamedColumn("DIP", DhOrPointsObjects[i].DIP !== null ? Number(DhOrPointsObjects[i].DIP) : 0);
+            oDmFile.SetNamedColumn("OBSOLETE", isObsoleteDh(DhOrPointsObjects[i].BHID, ObsoleteDhs));
+        }
+
+
+        oDmFile.Close();
+    }
+    catch (e) {
+        alert("Failed\nReason: " + e.description);
+        oDmFile.Close();
+        if (oDmApp) oDmApp.Quit(); // release the session to close it down
+    }
+}
+
+var isObsoleteDh = function (bhid, ObsoleteDhs) {
+    if (ObsoleteDhs == null)
+        return false;
+
+    for (var i = 0; i < ObsoleteDhs.length; i++) {
+        if (trim(bhid) === ObsoleteDhs[i])
+            return true;
+    }
+    return false;
+}
+
+var GetObsoleteDhs = function (DhOrPointsObjects) {
+
+    adParamInput_ = 1
+    adParamOutput_ = 2
+    adDouble_ = 5
+    adInteger_ = 3
+    adBoolean_ = 11
+    adDate_ = 7
+    adDBDate_ = 133
+    adVarWChar_ = 202
+    adCmdText_ = 1
+    adCmdStoredProc_ = 4
+    var cn = new ActiveXObject("ADODB.Connection");
+    var cmd = new ActiveXObject("ADODB.Command");
+    var rs = new ActiveXObject("ADODB.Recordset");
+    var adoConString;
+    adoConString = "DRIVER=SQL Server;SERVER=OGK-S-APPMINE01\\MINESQL;Trusted_Connection=Yes;DATABASE=ol_server;Network=DBMSSOCN;Address=OGK-S-APPMINE01\\MINESQL,1433";
+    cn.Open(adoConString);
+    cmd.ActiveConnection = cn;
+    cmd.CommandType = adCmdStoredProc_;
+    cmd.NamedParameters = 1;
+    cmd.CommandText = "sp_GetBhidHadSamples"
+    cmd.Parameters.Refresh();
+    var ObsoleteDhs = [];
+    var PORTION = 300;
+    var cnt_iteration = Math.floor(DhOrPointsObjects.length / PORTION);
+    for (var i = 0; i < cnt_iteration; i++) {
+        var bhid_list = "";
+        for (var j = i * PORTION; j < (i + 1) * PORTION ; j++) {
+            bhid_list = bhid_list + (DhOrPointsObjects[j].BHID !== null ? trim(DhOrPointsObjects[j].BHID) : "0-0-0")
+            bhid_list = bhid_list + ",";
+        }
+        bhid_list = bhid_list + "0-0-0";
+        cmd.Parameters.item("@bhid_list").Value = bhid_list
+        rs = cmd.Execute(); //rs.MoveFirst()
+        for (; !rs.EOF; rs.MoveNext()) {
+            ObsoleteDhs.push(trim(rs.Fields("bhid").value));
+        }
+    }
+
+    var bhid_list = "";
+    for (var i = cnt_iteration * PORTION; i < DhOrPointsObjects.length; i++) {
+        bhid_list = bhid_list + (DhOrPointsObjects[i].BHID !== null ? trim(DhOrPointsObjects[i].BHID) : "0-0-0")
+        bhid_list = bhid_list + ",";
+    }
+    bhid_list = bhid_list + "0-0-0";
+    cmd.Parameters.item("@bhid_list").Value = bhid_list
+    rs = cmd.Execute();
+    for (; !rs.EOF; rs.MoveNext()) {
+        ObsoleteDhs.push(trim(rs.Fields("bhid").value));
+    }
+
+
+    cn.Close();
+    return ObsoleteDhs;
+}
+
+
+
+var getDhCountInData = function (DhOrPointsDm) {
+    var ol_kol = oDmApp.ActiveProject.Design.Overlays.GetAtName("dh_points"); //получаем слой с нужным именем
+    if (ol_kol == null)															// если такого слоя нет, то
+        var ol_kol = oDmApp.ActiveProject.Design.Overlays.GetAtName("dh_points (points)");    // получаем слой с нужным именем, который был сохранен в файл (об этом говорит фраза "(points)")
+
+    if (ol_kol != null) { 																								 // если опять нет такого слоя, то
+
+        ol_kol3D = ol_kol.Ew3DObject;   // получаем ссылку на объект слоя
+    }
+    else {
+        alert("Слой 'dh_points' или 'dh_points (points)' не найден")
+        return;
+    }
+    var ol_kol3D_ObjData = ol_kol3D.ObjectData();
+
+    var cn_X_Coord = ol_kol3D_ObjData.Schema.GetFieldIndex("_X_Coord");
+    var cnS_SAMP = ol_kol3D_ObjData.Schema.GetFieldIndex("S_SAMP");
+    var cnCOL_SAMP = ol_kol3D_ObjData.Schema.GetFieldIndex("COL_SAMP");
+    var count = 0;
+    ol_kol3D_ObjData.GetFirstRow()
+    for (var i = 1 ; i <= ol_kol3D_ObjData.GetRowCount() ; ol_kol3D_ObjData.GetNextRow(), i++) {
+        var cr1 = ol_kol3D_ObjData.GetColumnAsLong(cnS_SAMP);
+        var cr2 = ol_kol3D_ObjData.GetColumnAsLong(cnCOL_SAMP);
+        var cr3 = ol_kol3D_ObjData.GetColumnAsString(cn_X_Coord);
+        if (cr1 != 0 && cr2 != 0 && cr3 != '-') {
+            count = count + 1;
+        }
+    }
+    return count;
+}
+
+var getSampleCountInData = function (DhOrPointsDm) {
+    var ol_kol = oDmApp.ActiveProject.Design.Overlays.GetAtName("dh_points"); //получаем слой с нужным именем
+    if (ol_kol == null)															// если такого слоя нет, то
+        var ol_kol = oDmApp.ActiveProject.Design.Overlays.GetAtName("dh_points (points)");    // получаем слой с нужным именем, который был сохранен в файл (об этом говорит фраза "(points)")
+
+    if (ol_kol != null) { 																								 // если опять нет такого слоя, то
+
+        ol_kol3D = ol_kol.Ew3DObject;   // получаем ссылку на объект слоя
+    }
+    else {
+        alert("Слой 'dh_points' или 'dh_points (points)' не найден")
+        return;
+    }
+    var ol_kol3D_ObjData = ol_kol3D.ObjectData();
+
+    var cn_X_Coord = ol_kol3D_ObjData.Schema.GetFieldIndex("_X_Coord");
+    var cnS_SAMP = ol_kol3D_ObjData.Schema.GetFieldIndex("S_SAMP");
+    var cnCOL_SAMP = ol_kol3D_ObjData.Schema.GetFieldIndex("COL_SAMP");
+    var count = 0;
+    ol_kol3D_ObjData.GetFirstRow()
+    for (var i = 1 ; i <= ol_kol3D_ObjData.GetRowCount() ; ol_kol3D_ObjData.GetNextRow(), i++) {
+        var cr1 = ol_kol3D_ObjData.GetColumnAsLong(cnS_SAMP);
+        var cr2 = ol_kol3D_ObjData.GetColumnAsLong(cnCOL_SAMP);
+        var cr3 = ol_kol3D_ObjData.GetColumnAsString(cn_X_Coord);
+        if (cr1 != 0 && cr2 != 0 && cr3 != '-') {
+            count = count + cr2;
+        }
+    }
+    return count;
+}
+
+var SaveDataToFile = function () {
+    var ol_kol = oDmApp.ActiveProject.Design.Overlays.GetAtName("dh_points"); //получаем слой с нужным именем
+    if (ol_kol == null)															// если такого слоя нет, то
+        var ol_kol = oDmApp.ActiveProject.Design.Overlays.GetAtName("dh_points (points)");    // получаем слой с нужным именем, который был сохранен в файл (об этом говорит фраза "(points)")
+
+    if (ol_kol != null) { 																								 // если опять нет такого слоя, то
+
+        ol_kol3D = ol_kol.Ew3DObject;   // получаем ссылку на объект слоя
+    }
+    else {
+        alert("Слой 'dh_points' или 'dh_points (points)' не найден. Сохранение не возможно")
+        return;
+    }
+    var bEP = oDmApp.ActiveProject.ExtendedPrecision;
+    ol_kol3D.SaveAsDatamineFile("dh_points", bEP, true, "");
+}
+
+function SetLito($scope) {
+
+    try {
+        SaveDataToFile();
+        if (!checkDataIsSaved()) {
+            return;
+        }
+
+
+        var fso_in = new ActiveXObject("Scripting.FileSystemObject"); // Объект FSO
+        try {
+            if (fso_in.FileExists(str_Prj_Folder + "\\lito_out.dm"))
+                fso_in.DeleteFile(str_Prj_Folder + "\\lito_out.dm")
+        }
+        catch (e) {
+            alert("Не могу удалить " + str_Prj_Folder + "\\lito_out.dm" + ". Программа будет остановлена");
+            return;
+        }
+
+
+        var str_Storage_Folder = "\\\\ogk-s-fs02\\DATA\\Polyus\\group_folders\\Geology\\OLIMPIADA";// Каталог структурированного хранилища файлов
+        var files_names_subfolder = "Litologiya"; // определяет подкаталог хранилища файлов где находятся фиксированные входные файлы
+        // список фиксированных входных файлов используемых в работе команд Datamine
+        var files_names = new Array("DOMEN301tr", "DOMEN301pt", "DOMEN302tr", "DOMEN302pt", "DOMEN303tr", "DOMEN303pt", "DOMEN304tr", "DOMEN304pt", "DOMEN305tr", "DOMEN305pt", "OL-zones-tr", "OL-zones-pt");
+
+
+        var str_IFile_Full;
+
+
+
+
+
+        //if (!(str_IFile5_Full = document.getElementById("iFile5").value)) {
+        //    alert("Выберите входной файл блочной модели");
+        //    return;
+        //}
+        str_IFile5_Full = oDmApp.ActiveProject.Folder + "\\dh_points.dm"
+
+
+        var str_IFile5_Short_idx_from = str_IFile5_Full.lastIndexOf("\\");
+
+
+        var str_IFile5_Short_idx_to = str_IFile5_Full.lastIndexOf(".");
+
+
+        if (str_IFile5_Short_idx_to != -1) {
+            var str_IFile5_Short_DM = str_IFile5_Full.slice(str_IFile5_Short_idx_from + 1, str_IFile5_Short_idx_to);
+        }
+        else {
+            var str_IFile5_Short_DM = str_IFile5_Full.slice(str_IFile5_Short_idx_from + 1);
+        }
+        var str_oFile_Short;
+
+        //if (!(str_oFile_Short_DM = document.getElementById("oFile").value)) {
+        //    alert("Выберите выходной файл");
+        //    return;
+        //}
+        str_oFile_Short_DM = "out";
+        str_oFile_Short = str_oFile_Short_DM + ".dm";
+
+
+
+        var str_oFile_Root = str_Prj_Folder + "\\" + str_oFile_Short;
+
+        //var sel = document.getElementById("OF_Category"); // Получаем наш список
+        //var str_OF_Category = sel.options[sel.selectedIndex].text;
+        //sel = document.getElementById("OF_Year"); // Получаем наш список
+        //var str_OF_Year = sel.options[sel.selectedIndex].text;
+        //sel = document.getElementById("OF_Month"); // Получаем наш список
+        //var str_OF_Month = sel.options[sel.selectedIndex].text;
+
+        var str_OF_Category = "DRILLHOLES"
+
+        var str_OF_Year = "2015";
+
+        var str_OF_Month = "11";
+
+        var str_oFile_Full = str_Storage_Folder + "\\" + str_OF_Category + "\\" + str_OF_Year + "\\" + str_OF_Month + "." + str_OF_Year + "\\" + str_oFile_Short;
+        var fso_in = new ActiveXObject("Scripting.FileSystemObject"); // Объект FSO
+
+        for (i = 0; i < files_names.length; i++) {
+            str_I_files_names_Full = str_Prj_Folder + "\\" + files_names_subfolder + "\\" + files_names[i] + ".dm";
+            str_I_files_names_Root = str_Prj_Folder + "\\" + files_names[i] + ".dm";
+            if (fso_in.FileExists(str_I_files_names_Full))
+                fso_in.CopyFile(str_I_files_names_Full, str_I_files_names_Root);
+            else {
+                alert("Не могу скопировать. Не найден файл: " + str_I_files_names_Full);
+                return false;
+            }
+
+        }
+
+
+
+        //oDmApp.ParseCommand("mgsort &IN=" + str_IFile5_Short_DM + " &OUT=1_sort *KEY1=BHID @ORDER=1");
+        //if (!chkFileInRoot("1_sort", "mgsort")) return;
+        //oDmApp.ParseCommand("selwf &IN=1_sort &WIRETR=r2kd3tr &WIREPT=r2kd3pt &OUT=kd3 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=ROCK @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+        //if (!chkFileInRoot("kd3", "selwf")) return;
+        //oDmApp.ParseCommand("selwf &IN=1_sort &WIRETR=r2kd2tr &WIREPT=r2kd2pt &OUT=kd2 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=ROCK @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+        //if (!chkFileInRoot("kd2", "selwf")) return;
+        //oDmApp.ParseCommand("selwf &IN=1_sort &WIRETR=r2kd1tr &WIREPT=r2kd1pt &OUT=kd1 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=ROCK @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+        //if (!chkFileInRoot("kd1", "selwf")) return;
+        //oDmApp.ParseCommand("selwf &IN=1_sort &WIRETR=pr1rztr &WIREPT=pr1rzpt &OUT=rz *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=ROCK @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+        //if (!chkFileInRoot("rz", "selwf")) return;
+        //oDmApp.ParseCommand("selwf &IN=1_sort &WIRETR=minertr &WIREPT=minerpt &OUT=min *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=ROCK @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+        //if (!chkFileInRoot("min", "selwf")) return;
+        //oDmApp.ParseCommand("selwf &IN=kd1 &WIRETR=minertr &WIREPT=minerpt &OUT=min2 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=ROCK @SELECT=4 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+        //if (!chkFileInRoot("min2", "selwf")) return;
+        //oDmApp.ParseCommand("join &IN1=min2 &IN2=kd2 &OUT=kd1_kd2 *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+        //if (!chkFileInRoot("kd1_kd2", "join")) return;
+        //oDmApp.ParseCommand("join &IN1=kd1_kd2 &IN2=kd3 &OUT=kd1_kd2_kd3 *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+        //if (!chkFileInRoot("kd1_kd2_kd3", "join")) return;
+        //oDmApp.ParseCommand("join &IN1=kd1_kd2_kd3 &IN2=rz &OUT=rok *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+        //if (!chkFileInRoot("rok", "join")) return;
+        //oDmApp.ParseCommand("join &IN1=rok &IN2=min &OUT=skv_rok *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+        //if (!chkFileInRoot("skv_rok", "join")) return;
+        //oDmApp.ParseCommand("selwf &IN=skv_rok &WIRETR=big_southtr &WIREPT=big_southpt &OUT=skv_S *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=PIT @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+        //if (!chkFileInRoot("skv_S", "selwf")) return;
+        //oDmApp.ParseCommand("selwf &IN=skv_rok &WIRETR=big_nordtr &WIREPT=big_nordpt &OUT=skv_N *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=PIT @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+        //if (!chkFileInRoot("skv_N", "selwf")) return;
+        //oDmApp.ParseCommand("join &IN1=skv_s &IN2=skv_n &OUT=temp1 *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+        //if (!chkFileInRoot("temp1", "join")) return;
+        //oDmApp.ParseCommand("SELEXY   &IN=temp1 &PERIM=str &OUT=" + str_oFile_Short_DM + " *X=XCOLLAR *Y=YCOLLAR  *ATTRIB1=DOMEN @OUTSIDE=0.0");
+        //if (!chkFileInRoot(str_oFile_Short_DM, "SELEXY")) return;
+        //oDmApp.ParseCommand("delete &IN=1_sort @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=kd1 @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=kd2 @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=kd3 @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=rz @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=min @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=kd1_kd2 @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=kd1_kd2_kd3 @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=rok @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=skv_rok @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=skv_S @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=skv_N @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=temp1 @CONFIRM=0");
+        //oDmApp.ParseCommand("delete &IN=SQL1 @CONFIRM=0");
+        alert(str_IFile5_Short_DM);
+          oDmApp.ParseCommand("SELWF &IN="+str_IFile5_Short_DM+" &WIRETR=DOMEN301tr &WIREPT=DOMEN301pt &OUT=OL1 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=DOMEN @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+         if (!chkFileInRoot("OL1","SELWF")) return;
+         oDmApp.ParseCommand("SELWF &IN="+str_IFile5_Short_DM+" &WIRETR=DOMEN302tr &WIREPT=DOMEN302pt &OUT=OL2 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=DOMEN @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+         if (!chkFileInRoot("OL2","SELWF")) return;
+         oDmApp.ParseCommand("SELWF &IN="+str_IFile5_Short_DM+" &WIRETR=DOMEN303tr &WIREPT=DOMEN303pt &OUT=OL3 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=DOMEN @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+         if (!chkFileInRoot("OL3","SELWF")) return;
+         oDmApp.ParseCommand("SELWF &IN="+str_IFile5_Short_DM+" &WIRETR=DOMEN304tr &WIREPT=DOMEN304pt &OUT=OL4 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=DOMEN @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+         if (!chkFileInRoot("OL4", "SELWF")) return;
+         oDmApp.ParseCommand("SELWF &IN=" + str_IFile5_Short_DM + " &WIRETR=DOMEN305tr &WIREPT=DOMEN305pt &OUT=OL5 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR *ATTRIB1=DOMEN @SELECT=3 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+         if (!chkFileInRoot("OL5", "SELWF")) return;
+         oDmApp.ParseCommand("SELWF &IN=" + str_IFile5_Short_DM + " &WIRETR=OL-zones-tr &WIREPT=OL-zones-pt &OUT=OL8 *X=XCOLLAR *Y=YCOLLAR *Z=ZCOLLAR  @SELECT=4 @EXCLUDE=0 @TOLERANC=0.001 @PRINT=0");
+         if (!chkFileInRoot("OL8", "SELWF")) return;
+         oDmApp.ParseCommand("EXTRA &IN=OL8 &OUT=OL8_EXTRA @APPROX=0 @PRINT=0" +
+			        " 'DOMEN=301'" +
+			        " 'GO'");
+         oDmApp.ParseCommand("SORTX  &IN=OL1  &OUT=OL1_sort  *KEY1=BHID @BINS=5.0  @ORDER=1.0");
+         if (!chkFileInRoot("OL1_sort","SORTX")) return;
+         oDmApp.ParseCommand("SORTX  &IN=OL2  &OUT=OL2_sort  *KEY1=BHID @BINS=5.0  @ORDER=1.0");
+         if (!chkFileInRoot("OL2_sort","SORTX")) return;
+         oDmApp.ParseCommand("SORTX  &IN=OL3  &OUT=OL3_sort  *KEY1=BHID @BINS=5.0  @ORDER=1.0");
+         if (!chkFileInRoot("OL3_sort","SORTX")) return;
+         oDmApp.ParseCommand("SORTX  &IN=OL4  &OUT=OL4_sort  *KEY1=BHID @BINS=5.0  @ORDER=1.0");
+         if (!chkFileInRoot("OL4_sort", "SORTX")) return;
+         oDmApp.ParseCommand("SORTX  &IN=OL5  &OUT=OL5_sort  *KEY1=BHID @BINS=5.0  @ORDER=1.0");
+         if (!chkFileInRoot("OL5_sort", "SORTX")) return;
+         oDmApp.ParseCommand("SORTX  &IN=OL8_EXTRA  &OUT=OL8_sort  *KEY1=BHID @BINS=5.0  @ORDER=1.0");
+         if (!chkFileInRoot("OL8_sort", "SORTX")) return;
+         oDmApp.ParseCommand("JOIN &IN1=OL1_sort &IN2=OL2_sort &OUT=OL_U1 *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+         if (!chkFileInRoot("OL_U1", "JOIN")) return;
+         oDmApp.ParseCommand("JOIN &IN1=OL_U1 &IN2=OL3_sort &OUT=OL_U2 *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+         if (!chkFileInRoot("OL_U2", "JOIN")) return;
+         oDmApp.ParseCommand("JOIN &IN1=OL_U2 &IN2=OL4_sort &OUT=OL_U3 *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+         if (!chkFileInRoot("OL_U3", "JOIN")) return;
+         oDmApp.ParseCommand("JOIN &IN1=OL_U3 &IN2=OL5_sort &OUT=OL_U4 *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+         if (!chkFileInRoot("OL_U4", "JOIN")) return;
+         oDmApp.ParseCommand("JOIN &IN1=OL_U4 &IN2=OL8_sort &OUT=" + str_oFile_Short_DM + " *KEY1=BHID @SUBSETR=0 @SUBSETF=0 @CARTJOIN=0 @PRINT=0");
+         if (!chkFileInRoot(str_oFile_Short_DM, "JOIN")) return;
+	    oDmApp.ParseCommand("delete &IN=OL1 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL2 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL3 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL4 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL5 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL_U1 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL_U2 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL_U3 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL_U4 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL8 @CONFIRM=0");
+	    oDmApp.ParseCommand("delete &IN=OL8_EXTRA @CONFIRM=0");
+
+
+        //if (fso_in.FileExists(str_oFile_Full))
+        //    fso_in.DeleteFile(str_oFile_Full);
+
+
+        if (fso_in.FileExists(str_oFile_Root)) {
+            fso_in.CopyFile(str_oFile_Root, str_Prj_Folder + "\\lito_out.dm");
+           // fso_in.MoveFile(str_oFile_Root, str_oFile_Full);
+        }
+        else {
+            alert("Не могу переместить. Не найден файл: " + str_oFile_Root);
+            return;
+        }
+
+        $scope.iDhNum=getDhCountInData("dh_points");
+        $scope.iSampleNum = getSampleCountInData("dh_points");
+
+        //if (!checkLitoPitDomen("lito_out")) {
+        //    $scope.isLitoExist = "Нет";
+        //    alert("В файле результате одно или более полей ROCK, sav, DOMEN не заполнены. ");
+        //}
+        //else {
+        //    $scope.isLitoExist = "Да";
+        //}
+
+        //alert("Всё получилось! Смотри файлы " + str_oFile_Short + "  в  папке " + str_Storage_Folder + "\\" + str_OF_Category + "\\" + str_OF_Year + "\\" + str_OF_Month + "." + str_OF_Year);
+        // конец. Раздел выполняет манипуляции с файлами и непосредственное выполнение команд
+
+    }
+    catch (e) {
+        alert("Failed\nReason: " + e.description);
+    }
+}
+
+var checkDataIsSaved = function () {
+    var result = true;
+    var DataRecCount = getRowCountInData("dh_points")
+    var FileRecCount = getRowCountInFile("dh_points")
+    if (DataRecCount != FileRecCount) {
+        result = false;
+        alert("Количества записей в файле и кэше Studio не равны. Сохраните данные, затем повторите попытку.");
+    }
+    return result;
+}
+function chkFileInRoot(strFileName, strProcess) {
+    var fso_temp = new ActiveXObject("Scripting.FileSystemObject");
+    str_TempFile_Root = str_Prj_Folder + "\\" + strFileName + ".dm"
+    if (!fso_temp.FileExists(str_TempFile_Root)) {
+        alert("Не создан файл: " + strFileName + " в процессе " + strProcess + ". Дальнейшее выполнение не возможно.");
+        return false;
+    }
+    else return true;
+
+}
+
+
+
+var getRowCountInData = function (DhOrPointsDm) {
+    var ol_kol = oDmApp.ActiveProject.Design.Overlays.GetAtName("dh_points"); //получаем слой с нужным именем
+    if (ol_kol == null)															// если такого слоя нет, то
+        var ol_kol = oDmApp.ActiveProject.Design.Overlays.GetAtName("dh_points (points)");    // получаем слой с нужным именем, который был сохранен в файл (об этом говорит фраза "(points)")
+
+    if (ol_kol != null) { 																								 // если опять нет такого слоя, то
+
+        ol_kol3D = ol_kol.Ew3DObject;   // получаем ссылку на объект слоя
+    }
+    else {
+        alert("Слой 'dh_points' или 'dh_points (points)' не найден")
+        return;
+    }
+    var ol_kol3D_ObjData = ol_kol3D.ObjectData();
+
+
+    var cn_X_Coord = 1
+    var count = 0;
+    ol_kol3D_ObjData.GetFirstRow()
+    for (var i = 1 ; i <= ol_kol3D_ObjData.GetRowCount() ; ol_kol3D_ObjData.GetNextRow(), i++) {
+        var cr1 = ol_kol3D_ObjData.GetColumnAsString(cn_X_Coord);
+        if (cr1 != "-") {
+            count = count + 1;
+        }
+    }
+    return count;
+}
+
+var getRowCountInFile = function (DhOrPointsDm) {
+    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+    oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + DhOrPointsDm + ".dm", false);
+    var count = oDmFile.GetRowCount();
+    oDmFile.Close();
+    return count;
+}
+var checkLitoPitDomen = function (LitoOutDm) {
+    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+    oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + LitoOutDm + ".dm", false);
+    var result = true;
+    for (oDmFile.MoveFirst() ; !oDmFile.EOF; oDmFile.MoveNext(), i++) {
+
+        var Lito = oDmFile.GetNamedColumn("ROCK").toFixed(0);
+        var Pit = oDmFile.GetNamedColumn("PIT");
+        var Domen = oDmFile.GetNamedColumn("DOMEN").toFixed(0);
+        if (Lito == 0 || Pit == "" || Domen == 0) {
+            result = false;
+            oDmFile.Close();
+            return result;
+        }
+
+
+    }
+    oDmFile.Close();
+    return result;
+}
+
+var RecordToDb = function ($scope) {
+    var lito_text = $scope.isLitoExist;
+    if (lito_text !== "Да") {
+        alert("Не проставлена литология. Продолжение не возможно.");
+        return;
+    }
+    RecordCollar("lito_out");
+    RecordSurvey("lito_out");
+    RecordAssay("lito_out");
+}
+
+//var RecordCollar = function (LitoOutDm) {
+//    adParamInput_ = 1
+//    adParamOutput_ = 2
+//    adDouble_ = 5
+//    adInteger_ = 3
+//    adBoolean_ = 11
+//    adDate_ = 7
+//    adDBDate_ = 133
+//    adVarWChar_ = 202
+//    adCmdText_ = 1
+//    adCmdStoredProc_ = 4
+//    var cn = new ActiveXObject("ADODB.Connection");
+//    var cmd = new ActiveXObject("ADODB.Command");
+//    var adoConString;
+//    adoConString = "DRIVER=SQL Server;SERVER=OGK-S-APPMINE01\\MINESQL;Trusted_Connection=Yes;DATABASE=ol_server;Network=DBMSSOCN;Address=OGK-S-APPMINE01\\MINESQL,1433";
+
+//    cn.Open(adoConString);
+//    cmd.ActiveConnection = cn;
+//    cmd.CommandType = adCmdStoredProc_;
+//    cmd.NamedParameters = 1;
+//    cmd.CommandText = " sp_DhSample_Add_CollarOR "
+//    cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parXCollar", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parYCollar", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parZCollar", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parEnddepth", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parDomen", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
+
+//    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+//    oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + LitoOutDm + ".dm", false);
+
+
+
+//    var numDh = 0;
+//    var err_count = 0;
+//    var i = 0;
+//    for (oDmFile.MoveFirst() ; !oDmFile.EOF; oDmFile.MoveNext(), i++) {
+//        if (oDmFile.GetNamedColumn("S_SAMP") != 0 && oDmFile.GetNamedColumn("COL_SAMP") != 0) {
+//            numDh = numDh + 1;
+//            cmd.Parameters.item("@parBhid").Value = oDmFile.GetNamedColumn("BHID");
+//            cmd.Parameters.item("@parXCollar").Value = oDmFile.GetNamedColumn("XCOLLAR");
+//            cmd.Parameters.item("@parYCollar").Value = oDmFile.GetNamedColumn("YCOLLAR");
+//            cmd.Parameters.item("@parZCollar").Value = oDmFile.GetNamedColumn("ZCOLLAR");
+//            cmd.Parameters.item("@parEnddepth").Value = oDmFile.GetNamedColumn("ENDDEPTH");
+//            cmd.Parameters.item("@parDomen").Value = oDmFile.GetNamedColumn("DOMEN");
+
+//            try {
+//                cmd.Execute();
+//            }
+//            catch (e) {
+//                err_count++;
+//                if (e.description.indexOf('duplicate') > -1) {
+//                    var iStr = Number(i) + 1;
+//                    oDmFile.SetNamedColumn("ERRCOL", 'Запись№ ' + iStr + ' уже есть в БД');
+//                    alert('CollarOR. Запись№ ' + iStr + ' уже есть в БД');
+//                }
+//                else
+//                    alert("Failed\nReason: " + e.description);
+
+//            }
+//            if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
+//                err_count++;
+//                var iStr = Number(i) + 1;
+//                oDmFile.SetNamedColumn("ERRCOL", cmd.Parameters.item("@parError").Value);
+//                alert('CollarOR. Запись№ ' + iStr + '. ' + cmd.Parameters.item("@parError").Value);
+//            }
+//        }
+//    }
+//    if (err_count > 0) {
+//        alert('В таблицу CollarOR Добавилось ' + (numDh - err_count) + ' записей из ' + numDh);
+//    }
+//    else {
+//        alert('В таблицу CollarOR все записи добавлены успешно! ' + numDh + " шт.");
+//    }
+//    oDmFile.Close();
+//    cn.Close();
+
+//}
+
+//var RecordSurvey = function (LitoOutDm) {
+//    adParamInput_ = 1
+//    adParamOutput_ = 2
+//    adDouble_ = 5
+//    adInteger_ = 3
+//    adBoolean_ = 11
+//    adDate_ = 7
+//    adDBDate_ = 133
+//    adVarWChar_ = 202
+//    adCmdText_ = 1
+//    adCmdStoredProc_ = 4
+//    var cn = new ActiveXObject("ADODB.Connection");
+//    var cmd = new ActiveXObject("ADODB.Command");
+//    var adoConString;
+//    adoConString = "DRIVER=SQL Server;SERVER=OGK-S-APPMINE01\\MINESQL;Trusted_Connection=Yes;DATABASE=ol_server;Network=DBMSSOCN;Address=OGK-S-APPMINE01\\MINESQL,1433";
+
+//    cn.Open(adoConString);
+//    cmd.ActiveConnection = cn;
+//    cmd.CommandType = adCmdStoredProc_;
+//    cmd.NamedParameters = 1;
+//    cmd.CommandText = " sp_DhSample_Add_SurveyOR "
+//    cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parAt", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parBrg", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parDip", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
+
+//    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+//    oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + LitoOutDm + ".dm", false);
+
+//    var numDh = 0;
+//    var err_count = 0;
+//    var i = 0;
+//    for (oDmFile.MoveFirst() ; !oDmFile.EOF; oDmFile.MoveNext(), i++) {
+//        if (oDmFile.GetNamedColumn("S_SAMP") != 0 && oDmFile.GetNamedColumn("COL_SAMP") != 0) {
+//            numDh = numDh + 1;
+//            cmd.Parameters.item("@parBhid").Value = oDmFile.GetNamedColumn("BHID");
+//            cmd.Parameters.item("@parAt").Value = 0;
+//            cmd.Parameters.item("@parBrg").Value = Number(oDmFile.GetNamedColumn("BRG")) + 90;
+//            cmd.Parameters.item("@parDip").Value = oDmFile.GetNamedColumn("DIP");
+
+//            try {
+//                cmd.Execute();
+//            }
+//            catch (e) {
+//                err_count++;
+//                if (e.description.indexOf('duplicate') > -1) {
+//                    var iStr = Number(i) + 1;
+//                    oDmFile.SetNamedColumn("ERRSUR", 'Запись№ ' + iStr + ' уже есть в БД');
+//                    alert('SurveysOR. Запись№ ' + iStr + ' уже есть в БД');
+//                }
+//                else
+//                    alert("Failed\nReason: " + e.description);
+
+//            }
+//            if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
+//                err_count++;
+//                var iStr = Number(i) + 1;
+//                oDmFile.SetNamedColumn("ERRSUR", cmd.Parameters.item("@parError").Value);
+//                alert('SurveysOR. Запись№ ' + iStr + '. ' + cmd.Parameters.item("@parError").Value);
+//            }
+//        }
+//    }
+//    if (err_count > 0) {
+//        alert('В таблицу SurveysOR Добавилось ' + (numDh - err_count) + ' записей из ' + numDh);
+//    }
+//    else {
+//        alert('В таблицу SurveysOR все записи добавлены успешно! ' + numDh + " шт.");
+//    }
+//    oDmFile.Close();
+//    cn.Close();
+
+//}
+
+//var RecordAssay = function (LitoOutDm) {
+//    adParamInput_ = 1
+//    adParamOutput_ = 2
+//    adDouble_ = 5
+//    adInteger_ = 3
+//    adBoolean_ = 11
+//    adDate_ = 7
+//    adDBDate_ = 133
+//    adVarWChar_ = 202
+//    adCmdText_ = 1
+//    adCmdStoredProc_ = 4
+//    var cn = new ActiveXObject("ADODB.Connection");
+//    var cmd = new ActiveXObject("ADODB.Command");
+//    var adoConString;
+//    adoConString = "DRIVER=SQL Server;SERVER=OGK-S-APPMINE01\\MINESQL;Trusted_Connection=Yes;DATABASE=ol_server;Network=DBMSSOCN;Address=OGK-S-APPMINE01\\MINESQL,1433";
+
+//    cn.Open(adoConString);
+//    cmd.ActiveConnection = cn;
+//    cmd.CommandType = adCmdStoredProc_;
+//    cmd.NamedParameters = 1;
+//    cmd.CommandText = " sp_DhSample_Add_AssayOR "
+//    cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parSample", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parFrom", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parTo", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parLength", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parRock", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parPit", adVarWChar_, adParamInput_, 50, ""));
+//    cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
+
+//    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+//    oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + LitoOutDm + ".dm", false);
+
+//    var err_count = 0;
+//    var i = 0;
+//    var numSample = 0;
+//    for (oDmFile.MoveFirst() ; !oDmFile.EOF; oDmFile.MoveNext(), i++) {
+//        if (oDmFile.GetNamedColumn("S_SAMP") != 0 && oDmFile.GetNamedColumn("COL_SAMP") != 0) {
+//            var startSample = Number(oDmFile.GetNamedColumn("S_SAMP").toFixed(0));
+//            var countSample = Number(oDmFile.GetNamedColumn("COL_SAMP").toFixed(0));
+//            var enddepth = Number(oDmFile.GetNamedColumn("ENDDEPTH").toFixed(3));
+//            var length = Number((enddepth / countSample).toFixed(3));
+
+//            for (var j = 0, sampleI = startSample; (j + length).toPrecision(5) <= countSample * length; j = j + length, sampleI = sampleI + 1) {
+//                numSample = numSample + 1;
+//                cmd.Parameters.item("@parBhid").Value = oDmFile.GetNamedColumn("BHID");
+//                cmd.Parameters.item("@parSample").Value = sampleI;
+//                cmd.Parameters.item("@parFrom").Value = j;
+//                cmd.Parameters.item("@parTo").Value = j + length;
+//                cmd.Parameters.item("@parLength").Value = length;
+//                cmd.Parameters.item("@parRock").Value = oDmFile.GetNamedColumn("ROCK");
+//                cmd.Parameters.item("@parPit").Value = oDmFile.GetNamedColumn("PIT");
+//                try {
+//                    cmd.Execute();
+//                }
+//                catch (e) {
+//                    err_count++;
+//                    if (e.description.indexOf('duplicate') > -1) {
+//                        var iStr = Number(i) + 1;
+//                        oDmFile.SetNamedColumn("ERRAS", 'Запись№ ' + iStr + ' уже есть в БД');
+//                        alert('AssaysOR. Запись№ ' + iStr + ' уже есть в БД');
+//                    }
+//                    else
+//                        alert("Failed\nReason: " + e.description);
+
+//                }
+//                if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
+//                    err_count++;
+//                    var iStr = Number(i) + 1;
+//                    oDmFile.SetNamedColumn("ERRAS", cmd.Parameters.item("@parError").Value);
+//                    alert('AssaysOR. Запись№ ' + iStr + '. ' + cmd.Parameters.item("@parError").Value);
+//                }
+//            }
+//        }
+//    }
+//    if (err_count > 0) {
+//        alert('В таблицу AssaysOR Добавилось ' + (numSample - err_count) + ' записей из ' + numSample);
+//    }
+//    else {
+//        alert('В таблицу AssaysOR все записи добавлены успешно! ' + numSample + " шт.");
+//    }
+//    oDmFile.Close();
+//    cn.Close();
+
+//}
+
+
+
+var CollarsObj = function (LitoOutDm) {
+
+    var return_obj = [];
+
+    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+    oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + LitoOutDm + ".dm", false);
+
+
+
+    var numDh = 0;
+    var err_count = 0;
+    var i = 0;
+    for (oDmFile.MoveFirst() ; !oDmFile.EOF; oDmFile.MoveNext(), i++) {
+        if (oDmFile.GetNamedColumn("S_SAMP") != 0 && oDmFile.GetNamedColumn("COL_SAMP") != 0) {
+            var new_obj = {};
+            numDh = numDh + 1;
+            new_obj.BHID = oDmFile.GetNamedColumn("BHID");
+            new_obj.BENCH = oDmFile.GetNamedColumn("GORIZONT");
+            new_obj.LINE = oDmFile.GetNamedColumn("BLOCK");
+            new_obj.HOLE = oDmFile.GetNamedColumn("HOLE");
+            new_obj.XCOLLAR = oDmFile.GetNamedColumn("XCOLLAR");
+            new_obj.YCOLLAR = oDmFile.GetNamedColumn("YCOLLAR");
+            new_obj.ZCOLLAR = oDmFile.GetNamedColumn("ZCOLLAR");
+            new_obj.ENDDEPTH = oDmFile.GetNamedColumn("ENDDEPTH");
+            new_obj.DRILL = oDmFile.GetNamedColumn("DRILL_TY");
+            new_obj.DOMEN = oDmFile.GetNamedColumn("DOMEN");
+            new_obj.error = -1;
+            return_obj.push(new_obj);
+        }
+    }
+    
+    oDmFile.Close();
+    
+    return return_obj;
+
+}
+
+var SurveysObj = function (LitoOutDm) {
+    
+    var return_obj = [];
+
+    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+    oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + LitoOutDm + ".dm", false);
+
+    var numDh = 0;
+    var err_count = 0;
+    var i = 0;
+    for (oDmFile.MoveFirst() ; !oDmFile.EOF; oDmFile.MoveNext(), i++) {
+        if (oDmFile.GetNamedColumn("S_SAMP") != 0 && oDmFile.GetNamedColumn("COL_SAMP") != 0) {
+            var new_obj = {};
+            numDh = numDh + 1;
+            new_obj.BHID = oDmFile.GetNamedColumn("BHID");
+            new_obj.AT = 0;
+            //new_obj.BRG = Number(oDmFile.GetNamedColumn("BRG")) + 90;
+            //new_obj.DIP = oDmFile.GetNamedColumn("DIP");
+            new_obj.error = -1;
+            new_obj.message = "";
+            return_obj.push(new_obj);
+        }
+    }
+   
+    oDmFile.Close();
+   
+    return return_obj;
+}
+
+var AssaysObj = function (LitoOutDm) {
+    var return_obj = [];
+
+    var oDmFile = new ActiveXObject("DmFile.DmTableADO");
+    oDmFile.Open(oDmApp.ActiveProject.Folder + "\\" + LitoOutDm + ".dm", false);
+
+    var err_count = 0;
+    var i = 0;
+    var numSample = 0;
+    for (oDmFile.MoveFirst() ; !oDmFile.EOF; oDmFile.MoveNext(), i++) {
+        if (oDmFile.GetNamedColumn("S_SAMP") != 0 && oDmFile.GetNamedColumn("COL_SAMP") != 0) {
+            var startSample = Number(oDmFile.GetNamedColumn("S_SAMP").toFixed(0));
+            var countSample = Number(oDmFile.GetNamedColumn("COL_SAMP").toFixed(0));
+            var enddepth = Number(oDmFile.GetNamedColumn("ENDDEPTH").toFixed(3));
+            var length = Number((enddepth / countSample).toFixed(3));
+
+            for (var j = 0, sampleI = startSample; (j + length).toPrecision(5) <= countSample * length; j = j + length, sampleI = sampleI + 1) {
+                numSample = numSample + 1;
+                var new_obj = {};
+                new_obj.BHID = oDmFile.GetNamedColumn("BHID");
+                new_obj.SAMPLE = sampleI;
+                new_obj.FROM = j;
+                new_obj.TO = j + length;
+                new_obj.LENGTH = length;
+              //  new_obj.ROCK = oDmFile.GetNamedColumn("ROCK");
+               // new_obj.PIT = oDmFile.GetNamedColumn("PIT");
+                new_obj.error = -1;
+                new_obj.message = "";
+                return_obj.push(new_obj);
+            }
+        }
+    }
+    
+    oDmFile.Close();
+    return return_obj;
+
+}
+
+
+
+var RecordCollarObj = function (collarObj) {
+
+    adParamInput_ = 1
+    adParamOutput_ = 2
+    adDouble_ = 5
+    adInteger_ = 3
+    adBoolean_ = 11
+    adDate_ = 7
+    adDBDate_ = 133
+    adVarWChar_ = 202
+    adCmdText_ = 1
+    adCmdStoredProc_ = 4
+    var cn = new ActiveXObject("ADODB.Connection");
+    var cmd = new ActiveXObject("ADODB.Command");
+    var adoConString;
+    adoConString = "DRIVER=SQL Server;SERVER=OGK-S-APPMINE01\\MINESQL;Trusted_Connection=Yes;DATABASE=ol_server;Network=DBMSSOCN;Address=OGK-S-APPMINE01\\MINESQL,1433";
+
+    cn.Open(adoConString);
+    cmd.ActiveConnection = cn;
+    cmd.CommandType = adCmdStoredProc_;
+    cmd.NamedParameters = 1;
+    cmd.CommandText = " sp_DhSample_Add_CollarER "
+    cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parBench", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parLine", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parHole", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parXCollar", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parYCollar", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parZCollar", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parEnddepth", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parDrill", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parDomen", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
+
+    var err_count = 0;
+
+    cmd.Parameters.item("@parBhid").Value = collarObj.BHID;
+    cmd.Parameters.item("@parBench").Value = collarObj.BENCH;
+    cmd.Parameters.item("@parLine").Value = collarObj.LINE;
+    cmd.Parameters.item("@parHole").Value = collarObj.HOLE;
+    cmd.Parameters.item("@parXCollar").Value = collarObj.XCOLLAR;
+    cmd.Parameters.item("@parYCollar").Value = collarObj.YCOLLAR;
+    cmd.Parameters.item("@parZCollar").Value = collarObj.ZCOLLAR;
+    cmd.Parameters.item("@parEnddepth").Value = collarObj.ENDDEPTH;
+    cmd.Parameters.item("@parDrill").Value = collarObj.DRILL;
+    cmd.Parameters.item("@parDomen").Value = collarObj.DOMEN;
+
+
+    try {
+        collarObj.error = 0;
+        collarObj.message = "";
+        cmd.Execute();
+    }
+    catch (e) {
+        err_count++;
+        collarObj.error = 100;
+        if (e.description.indexOf('duplicate') > -1) {
+            collarObj.message = " Такая запись уже есть в БД. "
+        }
+        else
+            collarObj.message = e.description;
+
+    }
+    if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
+        err_count++;
+        collarObj.error = 100;
+        collarObj.message = cmd.Parameters.item("@parError").Value;
+    }
+
+    cn.Close();
+
+    return err_count;
+    
+    
+
+}
+
+var RecordSurveysObj = function (surveysObj) {
+    adParamInput_ = 1
+    adParamOutput_ = 2
+    adDouble_ = 5
+    adInteger_ = 3
+    adBoolean_ = 11
+    adDate_ = 7
+    adDBDate_ = 133
+    adVarWChar_ = 202
+    adCmdText_ = 1
+    adCmdStoredProc_ = 4
+    var cn = new ActiveXObject("ADODB.Connection");
+    var cmd = new ActiveXObject("ADODB.Command");
+    var adoConString;
+    adoConString = "DRIVER=SQL Server;SERVER=OGK-S-APPMINE01\\MINESQL;Trusted_Connection=Yes;DATABASE=ol_server;Network=DBMSSOCN;Address=OGK-S-APPMINE01\\MINESQL,1433";
+
+    cn.Open(adoConString);
+    cmd.ActiveConnection = cn;
+    cmd.CommandType = adCmdStoredProc_;
+    cmd.NamedParameters = 1;
+    cmd.CommandText = " sp_DhSample_Add_SurveyOR "
+    cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parAt", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parBrg", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parDip", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
+
+
+    var numDh = 0;
+    var err_count = 0;
+    
+    for (var i = 0; i < surveysObj.length; i++) {
+       
+        cmd.Parameters.item("@parBhid").Value = surveysObj[i].BHID;
+        cmd.Parameters.item("@parAt").Value = surveysObj[i].AT;
+        cmd.Parameters.item("@parBrg").Value = surveysObj[i].BRG;
+        cmd.Parameters.item("@parDip").Value = surveysObj[i].DIP;
+
+            try {
+                surveysObj[i].error = 0;
+                cmd.Execute();
+            }
+            catch (e) {
+                err_count++;
+                surveysObj[i].error = 100;
+                if (e.description.indexOf('duplicate') > -1) {
+                    var iStr = Number(i) + 1;
+                 //   alert('SurveysOR. Запись№ ' + iStr + ' уже есть в БД');
+                }
+                else
+                    alert("Failed\nReason: " + e.description);
+
+            }
+            if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
+                err_count++;
+                var iStr = Number(i) + 1;
+               
+              //  alert('SurveysOR. Запись№ ' + iStr + '. ' + cmd.Parameters.item("@parError").Value);
+            }
+        
+    }
+    cn.Close();
+
+    return err_count;
+
+}
+
+var RecordAssaysObj = function (assaysObj) {
+
+    adParamInput_ = 1
+    adParamOutput_ = 2
+    adDouble_ = 5
+    adInteger_ = 3
+    adBoolean_ = 11
+    adDate_ = 7
+    adDBDate_ = 133
+    adVarWChar_ = 202
+    adCmdText_ = 1
+    adCmdStoredProc_ = 4
+    var cn = new ActiveXObject("ADODB.Connection");
+    var cmd = new ActiveXObject("ADODB.Command");
+    var adoConString;
+    adoConString = "DRIVER=SQL Server;SERVER=OGK-S-APPMINE01\\MINESQL;Trusted_Connection=Yes;DATABASE=ol_server;Network=DBMSSOCN;Address=OGK-S-APPMINE01\\MINESQL,1433";
+
+    cn.Open(adoConString);
+    cmd.ActiveConnection = cn;
+    cmd.CommandType = adCmdStoredProc_;
+    cmd.NamedParameters = 1;
+    cmd.CommandText = "sp_DhSample_Add_AssaysEr "
+    cmd.Parameters.Append(cmd.CreateParameter("@parBhid", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parSample", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parFrom", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parTo", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parLength", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parRock", adVarWChar_, adParamInput_, 50, ""));
+   // cmd.Parameters.Append(cmd.CreateParameter("@parPit", adVarWChar_, adParamInput_, 50, ""));
+    cmd.Parameters.Append(cmd.CreateParameter("@parError", adVarWChar_, adParamOutput_, 2000, ""));
+
+   
+
+    var err_count = 0;
+
+    var numSample = 0;
+    for (var i = 0 ; i < assaysObj.length; i++) {
+       
+
+                cmd.Parameters.item("@parBhid").Value = assaysObj[i].BHID;
+                cmd.Parameters.item("@parSample").Value = assaysObj[i].SAMPLE;
+                cmd.Parameters.item("@parFrom").Value = assaysObj[i].FROM;
+                cmd.Parameters.item("@parTo").Value = assaysObj[i].TO;
+                cmd.Parameters.item("@parLength").Value = assaysObj[i].LENGTH;
+                cmd.Parameters.item("@parRock").Value = 9;//(пусто) //assaysObj[i].ROCK;
+             //   cmd.Parameters.item("@parPit").Value = assaysObj[i].PIT;
+
+                
+
+                try {
+                    assaysObj[i].error = 0;
+                    assaysObj[i].message = "";
+                    cmd.Execute();
+                }
+                catch (e) {
+                    err_count++;
+                    assaysObj[i].error = 100;
+                    if (e.description.indexOf('duplicate') > -1) {
+                        var iStr = Number(i) + 1;
+                        assaysObj[i].message = " Такая запись уже есть в БД. "
+                      //  alert('AssaysOR. Запись№ ' + iStr + ' уже есть в БД');
+                    }
+                    else
+                        assaysObj[i].message = e.description;
+
+                }
+                if (cmd.Parameters.item("@parError").Value != null && cmd.Parameters.item("@parError").Value != undefined) {
+                    err_count++;
+                    var iStr = Number(i) + 1;
+                    assaysObj[i].error = 100;
+                    assaysObj[i].message = cmd.Parameters.item("@parError").Value;
+                }
+            
+        
+    }
+    cn.Close();
+
+    return err_count;
+
+}
+
+function trim(s) {
+    return rtrim(ltrim(s));
+}
+
+function ltrim(s) {
+    return s.replace(/^\s+/, '');
+}
+
+function rtrim(s) {
+    return s.replace(/\s+$/, '');
+}

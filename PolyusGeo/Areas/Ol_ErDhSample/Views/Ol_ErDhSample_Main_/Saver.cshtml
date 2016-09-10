@@ -1,0 +1,134 @@
+﻿
+@{
+    ViewBag.Title = "Saver";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container" ng-app="SaverApp">
+    <div ng-controller="CollarsView">
+        <div class="table">
+            <div class="row">
+                <div class="table-responsive">
+                    <table class="table table-condensed table-hover">
+
+                        <thead>
+                            <tr>
+                                <td>BHID</td>
+                                <td>XCOLLAR</td>
+                                <td>YCOLLAR</td>
+                                <td>ZCOLLAR</td>
+                                <td>Глубина</td>
+                                <td>Зона</td>
+                            </tr>
+                        </thead>
+
+                        <tbody ng-repeat="collar_row in collars_rows">
+                            <tr ng-click="view_row(collar_row)" ng-class="{'has-error': collar_row.error == 100,'has-success' : collar_row.error == 0}" 
+                                title="{{collar_row.message}}" >
+                                <td>{{collar_row.BHID}}</td>
+                                <td>{{collar_row.XCOLLAR}}</td>
+                                <td>{{collar_row.YCOLLAR}}</td>
+                                <td>{{collar_row.ZCOLLAR}}</td>
+                                <td>{{collar_row.ENDDEPTH}}</td>
+                                <td>{{collar_row.DOMEN}}</td>
+                            </tr>
+                        </tbody>
+                   </table>
+                </div>
+            </div>
+        </div>
+     </div>
+ </div>
+
+@section scripts{
+
+    @Scripts.Render("~/Ol_ErDhSample/bundles/scripts");
+
+    <script>
+
+
+
+
+        var SaverApp = angular.module("SaverApp", ["ui.bootstrap"]);
+        SaverApp.controller("CollarsView", function ($scope, $uibModal) {
+            ready();
+            var assaysObj = AssaysObj("lito_out");
+            var collarsObj = CollarsObj("lito_out")
+            $scope.collars_rows = collarsObj;
+
+            $scope.view_row = function (row)
+            {
+
+                var dtm = {  assays_rows: getAssaysByBhid(row.BHID, assaysObj) };
+                var modalInstance = $uibModal.open({
+                    templateUrl: ModalTplRowsUrl,
+                    controller: 'ModalInstanceCtrl',
+                    resolve: {
+                        dtm: function () {
+                            return dtm;
+                        }
+                    }
+                });
+
+                modalInstance.result.then(function () {
+                    var err_count = 0;
+                    err_count = RecordCollarObj(row);
+                
+            
+                   
+                    err_count = err_count + RecordAssaysObj(getAssaysByBhid(row.BHID, assaysObj));
+                    if (err_count > 0)
+                    {
+                        row.error = 100;
+                    }
+                });
+            }
+
+            
+
+            var getAssaysByBhid = function (Bhid, assaysObj) {
+                var result_obj = [];
+                for (var i = 0; i < assaysObj.length; i++) {
+                    if (assaysObj[i].BHID == Bhid) {
+                        result_obj.push(assaysObj[i]);
+                    }
+                }
+                return result_obj;
+            }
+        });
+    
+        SaverApp.controller('ModalInstanceCtrl', function ($scope, $uibModalInstance, dtm) {
+
+            $scope.dtm = dtm;
+            $scope.ok = function () {
+
+                $uibModalInstance.close();
+
+            };
+
+            $scope.cancel = function () {
+
+                $uibModalInstance.dismiss('cancel');
+            };
+        });
+
+
+    var ready = function()
+{
+
+    oDmApp = null;
+    oScript = null;
+    str_Storage_Folder = null;  // Каталог структурированного хранилища файлов
+    files_names_subfolder = "BLOCK_MODELS"; // определяет подкаталог хранилища файлов где находятся фиксированные входные файлы
+    // список фиксированных входных файлов используемых в работе команд Datamine
+    files_names = null;
+    pit = null;
+    isFirstRun = true;
+    str_Prj_Folder = null;
+    ModalTplRowsUrl = '@Url.Action("ModalTplRows", "Ol_ErDhSample_Main_", new { area = "Ol_ErDhSample" })';  // used in ang_app.js
+    SaverPageUrl = '@Url.Action("Saver", "Ol_ErDhSample_Main_", new { area = "Ol_ErDhSample" })';
+    AutoConnect();
+
+    }
+    </script>
+}
