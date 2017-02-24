@@ -49,6 +49,53 @@ function btnSetSample_Ok($scope) {
         ovPTNS.FormatLabels.SetTextColor(2, 0x884533);					// белый цвет надписи
         ovPTNS.FormatLabels.SetTextFontHeight(3, 500);					// размер шрифта
         ovPTNS.FormatLabels.SetTextColor(3, 0xcca533);					// белый цвет надписи
+
+        var path_template = "\\\\OGK-S-APPMINE01\\MDB\\tpl\\";
+        var parTpl = "FieldDhSample";
+
+
+        var LegendSample = oDmApp.LegendService.UserLegends.Item(parTpl + "2");
+        if (LegendSample == null) {
+            oDmApp.LegendService.CurrentDocument.FilePath = path_template + parTpl + "2.elg"
+            oDmApp.LegendService.CurrentDocument.Load()
+            LegendSample = oDmApp.LegendService.CurrentDocument.Legends.Item(parTpl + "2");
+            oDmApp.LegendService.UserLegends.Add(LegendSample);
+            LegendSample = oDmApp.LegendService.UserLegends.Item(parTpl + "2");
+        }
+
+        var LegendColSample = oDmApp.LegendService.UserLegends.Item(parTpl + "3");
+        if (LegendColSample == null) {
+            oDmApp.LegendService.CurrentDocument.FilePath = path_template + parTpl + "3.elg"
+            oDmApp.LegendService.CurrentDocument.Load()
+            LegendColSample = oDmApp.LegendService.CurrentDocument.Legends.Item(parTpl + "3");
+            oDmApp.LegendService.UserLegends.Add(LegendColSample);
+            LegendColSample = oDmApp.LegendService.UserLegends.Item(parTpl + "3");
+        }
+
+
+        var LegendDhBhid = oDmApp.LegendService.UserLegends.Item(parTpl + "1");
+        if (LegendDhBhid == null) {
+            oDmApp.LegendService.CurrentDocument.FilePath = path_template + parTpl + "1.elg"
+            oDmApp.LegendService.CurrentDocument.Load()
+            LegendDhBhid = oDmApp.LegendService.CurrentDocument.Legends.Item(parTpl + "1");
+            oDmApp.LegendService.UserLegends.Add(LegendDhBhid);
+            LegendDhBhid = oDmApp.LegendService.UserLegends.Item(parTpl + "1");
+        }
+
+
+        ovPTNS.FormatLabels.SetTextColorColumn(1, "OBSOLETE");
+        ovPTNS.FormatLabels.SetTextColorLegend(1, LegendSample);
+        ovPTNS.FormatLabels.SetTextColorMode(1, 2);
+        ovPTNS.FormatLabels.SetTextColorColumn(2, "OBSOLETE");
+        ovPTNS.FormatLabels.SetTextColorLegend(2, LegendColSample);
+        ovPTNS.FormatLabels.SetTextColorMode(2, 2);
+        ovPTNS.FormatLabels.SetTextColorColumn(3, "OBSOLETE");
+        ovPTNS.FormatLabels.SetTextColorLegend(3, LegendDhBhid);
+        ovPTNS.FormatLabels.SetTextColorMode(3, 2);
+
+
+
+
         oDmApp.ParseCommand("redraw-display");
 
         //oDmApp.ParseCommand("add-attributes"); 			// Добавление аттрибута через интерфейс
@@ -244,7 +291,7 @@ function btnShowDh_onclick() {
             " 'n'" +
             " 'Y'" +
             " '-'" +
-            " 'KOD'" +
+            " 'OBSOLETE'" +
             " 'n'" +
             " 'Y'" +
             " '-'" +
@@ -326,6 +373,8 @@ var copyRecordsToDmFilesORPoints = function (DhOrPointsDm, DhOrPointsObjects) {
             return;
         }
 
+        var ObsoleteDhs = GetObsoleteDhs(DhOrPointsObjects);
+
         for (var i = 0 ; i < DhOrPointsObjects.length ; i++) {
             oDmFile.AddRow();
             oDmFile.SetNamedColumn("BHID", DhOrPointsObjects[i].BHID !== null ? DhOrPointsObjects[i].BHID : "");
@@ -340,6 +389,7 @@ var copyRecordsToDmFilesORPoints = function (DhOrPointsDm, DhOrPointsObjects) {
             oDmFile.SetNamedColumn("DRILL_TY", DhOrPointsObjects[i].DRILL_TY !== null ? DhOrPointsObjects[i].DRILL_TY : 0);
             oDmFile.SetNamedColumn("BRG", DhOrPointsObjects[i].BRG !== null ? Number(DhOrPointsObjects[i].BRG) : 0);
             oDmFile.SetNamedColumn("DIP", DhOrPointsObjects[i].DIP !== null ? Number(DhOrPointsObjects[i].DIP) : 0);
+            oDmFile.SetNamedColumn("OBSOLETE", isObsoleteDh(DhOrPointsObjects[i].BHID, ObsoleteDhs));
         }
 
 
@@ -1254,4 +1304,85 @@ var RecordAssaysObj = function (assaysObj, sector) {
 
     return err_count;
 
+}
+
+
+var isObsoleteDh = function (bhid, ObsoleteDhs) {
+    if (ObsoleteDhs == null)
+        return false;
+
+    for (var i = 0; i < ObsoleteDhs.length; i++) {
+        if (trim(bhid) === ObsoleteDhs[i])
+            return true;
+    }
+    return false;
+}
+
+var GetObsoleteDhs = function (DhOrPointsObjects) {
+
+    adParamInput_ = 1
+    adParamOutput_ = 2
+    adDouble_ = 5
+    adInteger_ = 3
+    adBoolean_ = 11
+    adDate_ = 7
+    adDBDate_ = 133
+    adVarWChar_ = 202
+    adCmdText_ = 1
+    adCmdStoredProc_ = 4
+    var cn = new ActiveXObject("ADODB.Connection");
+    var cmd = new ActiveXObject("ADODB.Command");
+    var rs = new ActiveXObject("ADODB.Recordset");
+    var adoConString;
+    adoConString = "DRIVER=SQL Server;SERVER=OGK-S-APPMINE01\\MINESQL;Trusted_Connection=Yes;DATABASE=bl_server;Network=DBMSSOCN;Address=OGK-S-APPMINE01\\MINESQL,1433";
+    cn.Open(adoConString);
+    cmd.ActiveConnection = cn;
+    cmd.CommandType = adCmdStoredProc_;
+    cmd.NamedParameters = 1;
+    cmd.CommandText = "sp_GetBhidHadSamples_Dmp"
+    cmd.Parameters.Refresh();
+    var ObsoleteDhs = [];
+    var PORTION = 300;
+    var cnt_iteration = Math.floor(DhOrPointsObjects.length / PORTION);
+    for (var i = 0; i < cnt_iteration; i++) {
+        var bhid_list = "";
+        for (var j = i * PORTION; j < (i + 1) * PORTION ; j++) {
+            bhid_list = bhid_list + (DhOrPointsObjects[j].BHID !== null ? trim(DhOrPointsObjects[j].BHID) : "0-0-0")
+            bhid_list = bhid_list + ",";
+        }
+        bhid_list = bhid_list + "0-0-0";
+        cmd.Parameters.item("@bhid_list").Value = bhid_list
+        rs = cmd.Execute(); //rs.MoveFirst()
+        for (; !rs.EOF; rs.MoveNext()) {
+            ObsoleteDhs.push(trim(rs.Fields("bhid").value));
+        }
+    }
+
+    var bhid_list = "";
+    for (var i = cnt_iteration * PORTION; i < DhOrPointsObjects.length; i++) {
+        bhid_list = bhid_list + (DhOrPointsObjects[i].BHID !== null ? trim(DhOrPointsObjects[i].BHID) : "0-0-0")
+        bhid_list = bhid_list + ",";
+    }
+    bhid_list = bhid_list + "0-0-0";
+    cmd.Parameters.item("@bhid_list").Value = bhid_list
+    rs = cmd.Execute();
+    for (; !rs.EOF; rs.MoveNext()) {
+        ObsoleteDhs.push(trim(rs.Fields("bhid").value));
+    }
+
+
+    cn.Close();
+    return ObsoleteDhs;
+}
+
+function trim(s) {
+    return rtrim(ltrim(s));
+}
+
+function ltrim(s) {
+    return s.replace(/^\s+/, '');
+}
+
+function rtrim(s) {
+    return s.replace(/\s+$/, '');
 }
